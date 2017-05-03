@@ -1,0 +1,1407 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>RuBiq's CuBE</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<style>
+			body {
+				font-family: Monospace;
+				background-color: #f0f0f0;
+				margin: 0px;
+				overflow:hidden;
+				
+			}
+			
+			#titleimg{
+				position:absolute;
+				top: 10px;
+			}
+
+		</style>
+	</head>
+	<body>
+
+		<script src="cube_files/three.js"></script>
+
+		<script src="cube_files/TrackballControls.js"></script>
+		<script src="cube_files/Projector.js"></script>
+		<script src="cube_files/stats.min.js"></script>
+		<script src="cube_files/Tween.js"></script>
+
+		<script>
+
+			var container, stats;
+			var camera, controls, scene, renderer;
+			var objects = [], plane;
+
+			var raycaster = new THREE.Raycaster();
+			var mouse = new THREE.Vector2();
+			
+			var rec=[];
+			var cube= [];
+
+			var geometry= [];
+			var material=[];
+			
+			var rotWorldMatrix;
+			
+			var full =false,
+			fullA=false,
+			fullB=false,
+			fullC=false,
+			full1=false,
+			full2=false,
+			full3=false,
+			full5=false,
+			full7=false,
+			full8=false,
+			full9=false,
+			full11=false;
+			var cam1,cam2,cam3,shuffle,shcontrols,read,c=1,l1,l2;
+			//var defx=0,defy=0,defz=11;
+			
+			init();
+			animate();
+//////////////////////////////////////////////////////         START          ///////////////////////////////////////////////
+
+			function init() {
+
+				container = document.createElement( 'div' );
+				document.body.appendChild( container );
+				
+				camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 10000 );
+
+				camera.position.z = 11.5;
+				scene = new THREE.Scene();
+
+				renderer = new THREE.WebGLRenderer( { antialias: true } );
+				renderer.setClearColor( 0xf0f0f0 );
+				renderer.setPixelRatio( window.devicePixelRatio );
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				renderer.sortObjects = false;
+				
+
+				container.appendChild( renderer.domElement );
+///////////////////////////////////////////////////////       TRACKBALL CONTROLS          /////////////////////////////////
+				
+				controls = new THREE.TrackballControls( camera );
+				controls.rotateSpeed = 8.0;
+				controls.zoomSpeed = 0;
+				controls.panSpeed = 0;
+				controls.noZoom = true;
+				controls.noPan = true;
+				controls.staticMoving = true;
+				controls.dynamicDampingFactor = 0.3;
+
+			
+/////////////////////////////////////////////////////////////////////   LIGHTING    //////////////////////////////////////
+				scene.add( new THREE.AmbientLight( 0x505050 ) );
+
+				var light = new THREE.SpotLight( 0xffffff, 1.5 );
+				light.position.set( 0, 500, 2000 );
+			
+
+				scene.add( light );
+/////////////////////////////////////////////////////////////////  MULTIPLE COLORED CUBE  //////////////////////////////////////////////////
+
+				for(var i=1;i<=27;i++)
+				{
+					
+	geometry[i] = new THREE.CubeGeometry(1, 1, 1);    
+    material[i] = new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture('cube_files/images/'+i+'.jpg') } );
+	
+    var right = [new THREE.Vector2(0, .666), new THREE.Vector2(.5, .666), new THREE.Vector2(.5, 1), new THREE.Vector2(0, 1)];
+    var left = [new THREE.Vector2(.5, .666), new THREE.Vector2(1, .666), new THREE.Vector2(1, 1), new THREE.Vector2(.5, 1)];
+    var top = [new THREE.Vector2(0, .333), new THREE.Vector2(.5, .333), new THREE.Vector2(.5, .666), new THREE.Vector2(0, .666)];
+    var bottom = [new THREE.Vector2(.5, .333), new THREE.Vector2(1, .333), new THREE.Vector2(1, .666), new THREE.Vector2(.5, .666)];
+    var front = [new THREE.Vector2(0, 0), new THREE.Vector2(.5, 0), new THREE.Vector2(.5, .333), new THREE.Vector2(0, .333)];
+    var back = [new THREE.Vector2(.5, 0), new THREE.Vector2(1, 0), new THREE.Vector2(1, .333), new THREE.Vector2(.5, .333)];
+	
+    geometry[i].faceVertexUvs[0] = [];
+    
+	geometry[i].faceVertexUvs[0][0] = [ right[0], right[1], right[3] ];
+	geometry[i].faceVertexUvs[0][1] = [ right[1], right[2], right[3] ];
+	
+	geometry[i].faceVertexUvs[0][2] = [ left[0], left[1], left[3] ];
+	geometry[i].faceVertexUvs[0][3] = [ left[1], left[2], left[3] ];
+	
+	geometry[i].faceVertexUvs[0][4] = [ top[0], top[1], top[3] ];
+	geometry[i].faceVertexUvs[0][5] = [ top[1], top[2], top[3] ];
+	
+	geometry[i].faceVertexUvs[0][6] = [ bottom[0], bottom[1], bottom[3] ];
+	geometry[i].faceVertexUvs[0][7] = [ bottom[1], bottom[2], bottom[3] ];
+	
+	geometry[i].faceVertexUvs[0][8] = [ front[0], front[1], front[3] ];
+	geometry[i].faceVertexUvs[0][9] = [ front[1], front[2], front[3] ];
+	
+	geometry[i].faceVertexUvs[0][10] = [ back[0], back[1], back[3] ];
+	geometry[i].faceVertexUvs[0][11] = [ back[1], back[2], back[3] ];
+	
+	cube[i] = new THREE.Mesh(geometry[i], material[i]);
+		
+}
+					var xp=-1.2;
+					var yp=-1.2;
+					var zp= 1.2;	
+
+					for(var i=1;i<=27;i++)
+					{	
+						geometry[i].applyMatrix( new THREE.Matrix4().makeTranslation( xp, yp, zp) );
+						scene.add( cube[i] );
+						objects.push( cube[i]);
+						xp+=1.2;
+						if(i%3==0)
+						{
+							yp+=1.2;
+							xp=-1.2;
+						}
+						if((i%9)==0)
+						{
+							zp=zp-1.2;
+							yp=-1.2;
+						}
+
+				}
+
+
+
+
+////////////////////////////////////////////////////////////////////////   PLANE FOR RAY CASTING   /////////////////////////////////
+				plane = new THREE.Mesh(
+					new THREE.PlaneBufferGeometry( 2000, 2000, 8, 8 ),
+					new THREE.MeshBasicMaterial( { visible: false } )
+				);
+				scene.add( plane );
+			
+/*
+				var text2 = document.createElement('div');
+				text2.style.position = 'absolute';
+				text2.style.width = 100;
+				text2.style.height = 100;
+				text2.style.size=40;
+				text2.style.backgroundColor = "0xf0f0f0";
+				text2.innerHTML = "Camera";
+				text2.style.top = 420 + 'px';
+				text2.style.left = 80 + 'px';
+				document.body.appendChild(text2);
+				
+				cam1 = document.createElement('div');
+				cam1.style.position = 'absolute';
+				cam1.style.width = 100+'px';
+				cam1.style.height = 50+'px';
+				cam1.style.size=40;
+				cam1.style.backgroundColor = "Thistle";
+				//cam1.style.textColor="white";
+				cam1.innerHTML = "1-sided";
+				cam1.style.top = 450 + 'px';
+				cam1.style.left = 80 + 'px';
+				document.body.appendChild(cam1);
+				
+				cam2 = document.createElement('div');
+				cam2.style.position = 'absolute';
+				cam2.style.width = 100+'px';
+				cam2.style.height = 50+'px';
+				cam2.style.size=40;
+				cam2.style.backgroundColor = "Thistle";
+				//cam2.style.textColor="white";
+				cam2.innerHTML = "2-sided";
+				cam2.style.top = 505 + 'px';
+				cam2.style.left = 80 + 'px';
+				document.body.appendChild(cam2);
+				
+				cam3 = document.createElement('div');
+				cam3.style.position = 'absolute';
+				cam3.style.width = 100+'px';
+				cam3.style.height = 50+'px';
+				cam3.style.size=40;
+				cam3.style.backgroundColor = "Thistle";
+				//cam3.style.textColor="white";
+				cam3.innerHTML = "3-sided";
+				cam3.style.top = 560 + 'px';
+				cam3.style.left = 80 + 'px';
+				document.body.appendChild(cam3);
+		*/		
+				shuffle = document.createElement('shuf');
+				shuffle.style.position = 'absolute';
+				shuffle.style.width = 100+'px';
+				shuffle.style.height = 50+'px';
+				shuffle.style.size=40;
+				shuffle.style.backgroundColor = "MediumPurple";
+				shuffle.style.color="white";
+				shuffle.style.fontSize = "x-large";
+				shuffle.innerHTML = "shuffle";
+				shuffle.style.top = 560 + 'px';
+				shuffle.style.left = 1200 + 'px';
+				shuffle.style.paddingTop = 20+'px';
+				shuffle.style.paddingLeft = 15+'px';
+				document.body.appendChild(shuffle);
+	
+				shcontrols = document.createElement('controls');
+				shcontrols.style.position = 'absolute';
+				shcontrols.style.width = 100+'px';
+				shcontrols.style.height = 50+'px';
+				shcontrols.style.size=40;
+				shcontrols.style.backgroundColor = "MediumPurple";
+				shcontrols.style.color="white";
+				shcontrols.style.fontSize = "x-large";
+				shcontrols.innerHTML = "show controls";
+				shcontrols.style.top = 450 + 'px';
+				shcontrols.style.left = 1200 + 'px';
+				shcontrols.style.paddingTop = 10+'px';
+				shcontrols.style.paddingLeft = 15+'px';
+				document.body.appendChild(shcontrols);
+				
+////////////////////////////////////////////////////////////////////////////////  GPU FRAME STATS     ///////////////////////////////////
+
+				stats = new Stats();
+				stats.domElement.style.position = 'absolute';
+				stats.domElement.style.top = '0px';
+				stats.domElement.style.right= '0px';
+				container.appendChild( stats.domElement );
+				
+////////////////////////////////////////////////////////////////////////////////   MOUSE EVENTS   & resize call    /////////////////////////////////// 
+
+				addMouseHandler(container);
+				window.addEventListener( 'resize', onWindowResize, false );
+				//cam1.addEventListener("click", function(e) { chcam1(e); }, false);
+				//cam2.addEventListener("click", function(e) { chcam2(e); }, false);
+				//cam3.addEventListener("click", function(e) { chcam3(e); }, false);
+				shcontrols.addEventListener("mousedown", function(e) { shcont(e); }, false);
+				shuffle.addEventListener("mousedown", function(e) { shuf(e); }, false);
+				shuffle.addEventListener("mouseup", function(e) { shuf2(e); }, false);
+			}
+/*
+function chcam1(evt)
+{
+	cam2.style.backgroundColor = "Thistle";
+	cam3.style.backgroundColor = "Thistle";
+	cam1.style.backgroundColor = "cyan";
+	defx=0;
+	defy=0;
+	defz=12;
+
+
+}
+function chcam2(evt)
+{
+	defx=0;
+	defy=3;
+	defz=20;
+	cam1.style.backgroundColor = "Thistle";
+	cam3.style.backgroundColor = "Thistle";
+	cam2.style.backgroundColor = "cyan";
+}
+function chcam3(evt)
+{
+	defx=1;
+	defy=1;
+	defz=11;
+	cam1.style.backgroundColor = "Thistle";
+	cam2.style.backgroundColor = "Thistle";
+	cam3.style.backgroundColor = "cyan";
+}
+*/
+function shuf(evt)
+{
+	var a=100;
+	shuffle.style.backgroundColor = "Salmon";
+	
+	var rand1=Math.random()*10;
+	var rand2=Math.round(rand1);
+	
+	switch(rand2)
+	{
+		case 0:
+		var n=Math.random()*10;
+		var n1=Math.round(n);
+		for(var i=1;i<=n1;i++)
+		rotate1(a);
+		break;
+		
+		case 2:
+		var n=Math.random()*10;
+		var n1=Math.round(n);
+		for(var i=1;i<=n1;i++)
+		rotatezpos(a);
+		break;
+		
+		case 3:
+		var n=Math.random()*10;
+		var n1=Math.round(n);
+		for(var i=1;i<=n1;i++)
+		rotate2(a);
+		break;
+		
+		case 4:
+		var n=Math.random()*10;
+		var n1=Math.round(n);
+		for(var i=1;i<=n1;i++)
+		rotate4(a);
+		break;
+		
+		case 5:
+		var n=Math.random()*10;
+		var n1=Math.round(n);
+		for(var i=1;i<=n1;i++)
+		rotate11(a);
+		break;
+		
+		case 6:
+		var n=Math.random()*10;
+		var n1=Math.round(n);
+		for(var i=1;i<=n1;i++)
+		rotate3(a);
+		break;
+		
+		case 7:
+		var n=Math.random()*10;
+		var n1=Math.round(n);
+		for(var i=1;i<=n1;i++)
+		rotate9(a);
+		break;
+		
+		case 8:
+		var n=Math.random()*10;
+		var n1=Math.round(n);
+		for(var i=1;i<=n1;i++)
+		rotatezneg(a);
+		break;
+	
+		case 9:
+		var n=Math.random()*10;
+		var n1=Math.round(n);
+		for(var i=1;i<=n1;i++)
+		rotate12(a);
+		break;
+		
+		default:
+		var n=Math.random()*10;
+		var n1=Math.round(n);
+		for(var i=1;i<=n1;i++)
+		rotate3(a);
+	}
+
+}
+function shuf2(evt)
+{
+	shuffle.style.backgroundColor = "MediumPurple";
+}
+
+function shcont(evt)
+{
+	
+	if(c==1)
+	{	
+				
+				read = document.createElement('div');
+				read.style.position = 'absolute';
+				read.style.width = 100;
+				read.style.height = 100;
+				read.style.size=40;
+				read.style.backgroundColor = "Whitesmoke";
+				shuffle.style.color="white";
+				read.innerHTML = "Controls";
+				read.style.top = 580 + 'px';
+				read.style.left = 80 + 'px';
+				document.body.appendChild(read);
+				shcontrols.style.backgroundColor = "Salmon";
+				read.style.color="black";
+				
+				l1 = document.createElement('div');
+				l1.style.position = 'absolute';
+				l1.style.width = 100;
+				l1.style.height = 100;
+				l1.style.size=40;
+				l1.style.backgroundColor = "Whitesmoke";
+				shuffle.style.color="white";
+				l1.innerHTML = "Use the mouse and your mind to get the hang of controls, I know you can do it! ";
+				l1.style.top = 600 + 'px';
+				l1.style.left = 80 + 'px';
+				document.body.appendChild(l1);
+				shcontrols.style.backgroundColor = "Salmon";
+				l1.style.color="black";
+
+				l2 = document.createElement('div');
+				l2.style.position = 'absolute';
+				l2.style.width = 100;
+				l2.style.height = 100;
+				l2.style.size=40;
+				l2.style.backgroundColor = "Whitesmoke";
+				shuffle.style.color="white";
+				l2.innerHTML = "Can cause problems on low powerful GPU! ";
+				l2.style.top = 630 + 'px';
+				l2.style.left = 80 + 'px';
+				document.body.appendChild(l2);
+				shcontrols.style.backgroundColor = "Salmon";
+				l2.style.color="black";
+				c=3;
+	}
+	else if(c==2)
+	{
+		shcontrols.style.backgroundColor = "Salmon";
+		l1.style.color="black";
+		l2.style.color="black";
+		read.style.color="black";
+		c=3;
+	}
+	else 
+	{
+		shcontrols.style.backgroundColor = "MediumPurple";
+		l1.style.color="Whitesmoke";
+		l2.style.color="Whitesmoke";
+		read.style.color="Whitesmoke";
+		c=2;
+	}
+}
+
+///////////////////////////////////////////////////////////////////////    MOUSE FUNCTIONS   ////////////////////////////		
+
+	
+	var mouseDown = false,
+    pageX = 0;
+
+    function onMouseMove(evt)
+    {
+        if (!mouseDown)
+            return;
+
+        evt.preventDefault();
+        
+        var deltax = evt.pageX - pageX;
+        pageX = evt.pageX;
+		
+		var deltay = evt.pageY - pageY;
+	
+		pageY = evt.pageY;
+        	
+			if(full==true)
+			{
+				
+				rotatefull(deltax,deltay);
+				
+			}	
+			deltax=deltax*10;
+			deltay=deltay*10;
+			
+			var negdeltay=(-1*deltay)
+			var negdeltax=(-1*deltax)
+			if(full1==true)
+			{	
+				if((deltax>negdeltay)&&(deltax>0))
+				{
+					rotate1(300);
+				}
+				else 
+				if((negdeltay>deltax)&&(negdeltay>0))
+				{
+					rotate2(300);
+				}
+				else
+				full1=false;
+				
+			}
+			if(full3==true)
+			{
+				if((deltax<deltay)&&(deltax<0))
+				{
+					rotate3(300);
+				}
+				else
+				if((negdeltay>deltax)&&(negdeltay>0))
+				{
+					rotate4(300);
+				}
+				else 
+				full3=false;
+			}
+			if(full5==true)
+			{
+				/*if((deltax>deltay)&&(deltay>-10))
+				{
+					rotate5(300);
+				}
+				else */if((negdeltay>deltax)&&(negdeltay>0))
+				{
+					rotatezpos(300);
+				}
+				else if((negdeltay<deltax)&&(negdeltay<0))
+				{
+					rotatezneg(300);
+				}
+				else
+				full5=false;
+			}
+			if(full7==true)
+			{
+				/*if((negdeltax>deltay)&&(deltay>-10))
+				{
+					rotate7(300);
+				}
+				else */if((negdeltay>deltax)&&(negdeltay>0))
+				{
+					rotatezneg(300);
+				}
+				else if((negdeltay<deltax)&&(negdeltay<0))
+				{
+					rotatezpos(300);
+				}
+				else
+				full7=false;
+			}
+			if(full9==true)
+			{
+			
+				if((deltax>negdeltay)&&(deltax>0))
+				{
+					rotate9(300);
+				}				
+				else
+				if((negdeltay<deltax)&&(negdeltay<0))
+				{
+					rotate10(300);
+				}
+				else 
+				full9=false;
+			}
+			if(full11==true)
+			{
+				if((deltax<deltay)&&(deltax<0))
+				{
+					rotate11(300);
+				}
+				else
+				if((negdeltay<deltax)&&(negdeltay<0))
+				{
+					rotate12(300);
+				}
+				else 
+				full11=false;
+			}
+			if(full2==true)
+			{
+				/*if((negdeltay>deltax)&&(deltax>-10))
+				{
+					rotate6(300);
+				}
+				else */if((deltax<deltay)&&(deltax<0))
+				{
+					rotatezpos(300);
+				}
+				else if((deltax>negdeltay)&&(deltax>0))
+				{
+					rotatezneg(300);
+				}
+				else
+				full2=false;
+			}
+			if(full8==true)
+			{
+				/*if((deltax<deltay)&&(deltax>-10))
+				{
+					rotate8(300);
+				}
+				else*/ if((deltax>negdeltay)&&(deltax>0))
+				{
+					rotatezpos(300);
+				}
+				else if((deltax<deltay)&&(deltax<0))
+				{
+					rotatezneg(300);
+				}
+				else
+				full8=false;
+			}
+			if(fullA==true)
+			{
+				if((deltax>0)&&(deltax>deltay)&&(deltax>negdeltay))
+				{
+					rotate1(300);
+					rotate5(300);
+					rotate9(300);
+				}
+				else if((deltax<0)&&(negdeltax>deltay)&&(negdeltax>negdeltay))
+				{
+					rotate3(300);
+					rotate7(300);
+					rotate11(300);
+				}
+				else if((deltay>0)&&(deltax<deltay)&&(negdeltax<deltay))
+				{
+					rotate10(300);
+					rotate8(300);
+					rotate12(300);
+				}
+				else if((deltay<0)&&(deltax<negdeltay)&&(negdeltax>deltay))
+				{
+					rotate2(300);
+					rotate6(300);
+					rotate4(300);
+				}
+				
+				fullA=false;
+			}
+		}
+
+    function onMouseDown(evt)
+    {
+        evt.preventDefault();
+        
+        mouseDown = true;
+		pageY = evt.pageY;
+        pageX = evt.pageX;
+		
+		var x = event.x;
+		var y = event.y;
+				mouse.x = ( event.clientX / renderer.domElement.clientWidth ) * 2 - 1;
+				mouse.y = - ( event.clientY / renderer.domElement.clientHeight ) * 2 + 1;
+
+				raycaster.setFromCamera( mouse, camera );
+
+				var intersects = raycaster.intersectObjects( objects );
+
+				if ( intersects.length > 0 ) {
+					
+					
+						if(intersects[ 0 ].object==cube[1])
+						{
+							full1=true;
+						}
+						else if(intersects[ 0 ].object==cube[2])
+						{
+							full2=true;
+						}
+						else if(intersects[ 0 ].object==cube[3])
+						{
+							full3=true;
+						}
+						else if(intersects[ 0 ].object==cube[4])
+						{
+							full5=true;
+						}
+						else if(intersects[ 0 ].object==cube[6])
+						{
+							full7=true;
+						}
+						else if(intersects[ 0 ].object==cube[7])
+						{
+							full9=true;
+						}
+						else if(intersects[ 0 ].object==cube[8])
+						{
+							full8=true;
+						}
+						else if(intersects[ 0 ].object==cube[9])
+						{
+							full11=true;
+						}
+						else if(intersects[ 0 ].object==cube[5])
+						{
+							fullA=true;
+						}
+						
+					
+					
+				}
+				else{
+					full=true;
+				}
+				
+
+    }
+
+    function onMouseUp(evt)
+    {
+        evt.preventDefault();
+        
+        mouseDown = false;
+	
+			
+			if(full==true)
+			{
+				controls.reset();
+				full=false;
+			
+			}
+			else
+			{
+				full1=false;
+				full3=false;
+				full5=false;
+				full7=false;
+				full9=false;
+				full11=false;
+				full2=false;
+				full8=false;
+				fullA=false;
+				
+			}
+    }
+
+	
+	function rotatefull(deltax,deltay)
+    {
+		controls.update();			
+    }
+	
+function rotate1(speed)
+{		
+
+	var cubeAngle = 0;
+	var start = {angle: cubeAngle};
+	var end = {angle: cubeAngle + 90};
+    var lastAngle=0;                     
+	var tween = new TWEEN.Tween(start)
+	.to(end, speed)
+	.easing( TWEEN.Easing.Exponential.InOut )
+	.onUpdate(function(){
+		cubeAngle=this.angle;    
+		rotateAroundWorldAxis(cube[1], new THREE.Vector3(0,1,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[2], new THREE.Vector3(0,1,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[3], new THREE.Vector3(0,1,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[10], new THREE.Vector3(0,1,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[11], new THREE.Vector3(0,1,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[12], new THREE.Vector3(0,1,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[19], new THREE.Vector3(0,1,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[20], new THREE.Vector3(0,1,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[21], new THREE.Vector3(0,1,0),degreeToRadians(cubeAngle-lastAngle));
+		lastAngle=cubeAngle;                   
+   })
+	.start()
+
+
+			cube[55]=cube[19];
+			cube[19]=cube[21];
+			cube[21]=cube[3];
+			cube[3]=cube[1];
+			cube[1]=cube[55];
+			
+			cube[56]=cube[20];
+			cube[20]=cube[12];
+			cube[12]=cube[2];
+			cube[2]=cube[10];
+			cube[10]=cube[56];
+
+			full1=false;
+			
+}	
+
+function rotate3(speed)
+{			
+	var cubeAngle = 0;
+	var start = {angle: cubeAngle};
+	var end = {angle: cubeAngle + 90};
+    var lastAngle=0;                     
+	var tween = new TWEEN.Tween(start)
+	.to(end, speed)
+	.easing( TWEEN.Easing.Exponential.InOut )
+	.onUpdate(function(){
+		cubeAngle=this.angle;    
+		rotateAroundWorldAxis(cube[1], new THREE.Vector3(0,-1,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[2], new THREE.Vector3(0,-1,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[3], new THREE.Vector3(0,-1,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[10], new THREE.Vector3(0,-1,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[11], new THREE.Vector3(0,-1,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[12], new THREE.Vector3(0,-1,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[19], new THREE.Vector3(0,-1,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[20], new THREE.Vector3(0,-1,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[21], new THREE.Vector3(0,-1,0),degreeToRadians(cubeAngle-lastAngle));
+		lastAngle=cubeAngle;                   
+   })
+	.start()
+
+
+			cube[55]=cube[21];
+			cube[21]=cube[19];
+			cube[19]=cube[1];
+			cube[1]=cube[3];
+			cube[3]=cube[55];
+			
+			cube[56]=cube[20];
+			cube[20]=cube[10];
+			cube[10]=cube[2];
+			cube[2]=cube[12];
+			cube[12]=cube[56];
+			
+
+			full3=false;
+
+
+}	
+
+function rotate5(speed)
+{		
+	var cubeAngle = 0;
+	var start = {angle: cubeAngle};
+	var end = {angle: cubeAngle + 90};
+    var lastAngle=0;                     
+	var tween = new TWEEN.Tween(start)
+	.to(end, speed)
+	.easing( TWEEN.Easing.Exponential.InOut )
+	.onUpdate(function(){
+		cubeAngle=this.angle;    
+		rotateAroundWorldAxis(cube[4], new THREE.Vector3(0,1,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[5], new THREE.Vector3(0,1,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[6], new THREE.Vector3(0,1,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[13], new THREE.Vector3(0,1,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[14], new THREE.Vector3(0,1,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[15], new THREE.Vector3(0,1,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[22], new THREE.Vector3(0,1,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[23], new THREE.Vector3(0,1,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[24], new THREE.Vector3(0,1,0),degreeToRadians(cubeAngle-lastAngle));
+		lastAngle=cubeAngle;                   
+   })
+	.start()
+	
+			cube[55]=cube[22];
+			cube[22]=cube[24];
+			cube[24]=cube[6];
+			cube[6]=cube[4];
+			cube[4]=cube[55];
+			
+			cube[56]=cube[23];
+			cube[23]=cube[15];
+			cube[15]=cube[5];
+			cube[5]=cube[13];
+			cube[13]=cube[56];
+
+			full5=false;
+	
+
+}	
+
+function rotate7(speed)
+{		
+	var cubeAngle = 0;
+	var start = {angle: cubeAngle};
+	var end = {angle: cubeAngle + 90};
+    var lastAngle=0;                     
+	var tween = new TWEEN.Tween(start)
+	.to(end, speed)
+	.easing( TWEEN.Easing.Exponential.InOut )
+	.onUpdate(function(){
+		cubeAngle=this.angle;    
+		rotateAroundWorldAxis(cube[4], new THREE.Vector3(0,-1,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[5], new THREE.Vector3(0,-1,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[6], new THREE.Vector3(0,-1,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[13], new THREE.Vector3(0,-1,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[14], new THREE.Vector3(0,-1,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[15], new THREE.Vector3(0,-1,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[22], new THREE.Vector3(0,-1,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[23], new THREE.Vector3(0,-1,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[24], new THREE.Vector3(0,-1,0),degreeToRadians(cubeAngle-lastAngle));
+		lastAngle=cubeAngle;                   
+   })
+	.start()
+	
+			cube[55]=cube[24];
+			cube[24]=cube[22];
+			cube[22]=cube[4];
+			cube[4]=cube[6];
+			cube[6]=cube[55];
+			
+			cube[56]=cube[23];
+			cube[23]=cube[13];
+			cube[13]=cube[5];
+			cube[5]=cube[15];
+			cube[15]=cube[56];
+			
+			full7=false;
+
+
+}	
+
+function rotate9(speed)
+{			
+	var cubeAngle = 0;
+	var start = {angle: cubeAngle};
+	var end = {angle: cubeAngle + 90};
+    var lastAngle=0;                     
+	var tween = new TWEEN.Tween(start)
+	.to(end, speed)
+	.easing( TWEEN.Easing.Exponential.InOut )
+	.onUpdate(function(){
+		cubeAngle=this.angle;    
+		rotateAroundWorldAxis(cube[7], new THREE.Vector3(0,1,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[8], new THREE.Vector3(0,1,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[9], new THREE.Vector3(0,1,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[16], new THREE.Vector3(0,1,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[17], new THREE.Vector3(0,1,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[18], new THREE.Vector3(0,1,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[25], new THREE.Vector3(0,1,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[26], new THREE.Vector3(0,1,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[27], new THREE.Vector3(0,1,0),degreeToRadians(cubeAngle-lastAngle));
+		lastAngle=cubeAngle;                   
+   })
+	.start()
+
+			
+			cube[55]=cube[25];
+			cube[25]=cube[27];
+			cube[27]=cube[9];
+			cube[9]=cube[7];
+			cube[7]=cube[55];
+			
+			cube[56]=cube[26];
+			cube[26]=cube[18];
+			cube[18]=cube[8];
+			cube[8]=cube[16];
+			cube[16]=cube[56];
+
+			full9=false;
+
+}	
+
+function rotate11(speed)
+{			
+	var cubeAngle = 0;
+	var start = {angle: cubeAngle};
+	var end = {angle: cubeAngle + 90};
+    var lastAngle=0;                     
+	var tween = new TWEEN.Tween(start)
+	.to(end, speed)
+	.easing( TWEEN.Easing.Exponential.InOut )
+	.onUpdate(function(){
+		cubeAngle=this.angle;    
+		rotateAroundWorldAxis(cube[7], new THREE.Vector3(0,-1,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[8], new THREE.Vector3(0,-1,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[9], new THREE.Vector3(0,-1,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[16], new THREE.Vector3(0,-1,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[17], new THREE.Vector3(0,-1,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[18], new THREE.Vector3(0,-1,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[25], new THREE.Vector3(0,-1,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[26], new THREE.Vector3(0,-1,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[27], new THREE.Vector3(0,-1,0),degreeToRadians(cubeAngle-lastAngle));
+		lastAngle=cubeAngle;                   
+   })
+	.start()
+
+			
+			cube[55]=cube[27];
+			cube[27]=cube[25];
+			cube[25]=cube[7];
+			cube[7]=cube[9];
+			cube[9]=cube[55];
+			
+			cube[56]=cube[26];
+			cube[26]=cube[16];
+			cube[16]=cube[8];
+			cube[8]=cube[18];
+			cube[18]=cube[56];
+			
+			full11=false;
+
+}	
+
+function rotate2(speed)
+{			
+	var cubeAngle = 0;
+	var start = {angle: cubeAngle};
+	var end = {angle: cubeAngle + 90};
+    var lastAngle=0;                        
+	var tween = new TWEEN.Tween(start)
+	.to(end, speed)
+	.easing( TWEEN.Easing.Exponential.InOut )
+	.onUpdate(function(){
+		cubeAngle=this.angle;    
+		rotateAroundWorldAxis(cube[1], new THREE.Vector3(-1,0,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[4], new THREE.Vector3(-1,0,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[7], new THREE.Vector3(-1,0,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[10], new THREE.Vector3(-1,0,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[13], new THREE.Vector3(-1,0,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[16], new THREE.Vector3(-1,0,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[19], new THREE.Vector3(-1,0,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[22], new THREE.Vector3(-1,0,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[25], new THREE.Vector3(-1,0,0),degreeToRadians(cubeAngle-lastAngle));
+		lastAngle=cubeAngle;                   
+   })
+	.start()
+
+
+			cube[57]=cube[19];
+			cube[19]=cube[25];
+			cube[25]=cube[7];
+			cube[7]=cube[1];
+			cube[1]=cube[57];
+			
+			cube[58]=cube[10];
+			cube[10]=cube[22];
+			cube[22]=cube[16];
+			cube[16]=cube[4];
+			cube[4]=cube[58];
+			
+			full1=false;
+		
+}	
+
+function rotate4(speed)
+{			
+	var cubeAngle = 0;
+	var start = {angle: cubeAngle};
+	var end = {angle: cubeAngle + 90};
+    var lastAngle=0;                         
+	var tween = new TWEEN.Tween(start)
+	.to(end, speed)
+	.easing( TWEEN.Easing.Exponential.InOut )
+	.onUpdate(function(){
+		cubeAngle=this.angle;    
+		rotateAroundWorldAxis(cube[3], new THREE.Vector3(-1,0,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[6], new THREE.Vector3(-1,0,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[9], new THREE.Vector3(-1,0,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[12], new THREE.Vector3(-1,0,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[15], new THREE.Vector3(-1,0,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[18], new THREE.Vector3(-1,0,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[21], new THREE.Vector3(-1,0,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[24], new THREE.Vector3(-1,0,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[27], new THREE.Vector3(-1,0,0),degreeToRadians(cubeAngle-lastAngle));
+		lastAngle=cubeAngle;                   
+   })
+	.start()
+
+
+			cube[57]=cube[27];
+			cube[27]=cube[9];
+			cube[9]=cube[3];
+			cube[3]=cube[21];
+			cube[21]=cube[57];
+			
+			cube[58]=cube[24];
+			cube[24]=cube[18];
+			cube[18]=cube[6];
+			cube[6]=cube[12];
+			cube[12]=cube[58];
+			
+			full3=false;
+		
+}	
+
+function rotate10(speed)
+{			
+	var cubeAngle = 0;
+	var start = {angle: cubeAngle};
+	var end = {angle: cubeAngle + 90};
+    var lastAngle=0;                       
+	var tween = new TWEEN.Tween(start)
+	.to(end, speed)
+	.easing( TWEEN.Easing.Exponential.InOut )
+	.onUpdate(function(){
+		cubeAngle=this.angle;    
+		rotateAroundWorldAxis(cube[1], new THREE.Vector3(1,0,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[4], new THREE.Vector3(1,0,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[7], new THREE.Vector3(1,0,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[10], new THREE.Vector3(1,0,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[13], new THREE.Vector3(1,0,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[16], new THREE.Vector3(1,0,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[19], new THREE.Vector3(1,0,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[22], new THREE.Vector3(1,0,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[25], new THREE.Vector3(1,0,0),degreeToRadians(cubeAngle-lastAngle));
+		lastAngle=cubeAngle;                   
+   })
+	.start()
+
+
+			cube[57]=cube[1];
+			cube[1]=cube[7];
+			cube[7]=cube[25];
+			cube[25]=cube[19];
+			cube[19]=cube[57];
+			
+			cube[58]=cube[4];
+			cube[4]=cube[16];
+			cube[16]=cube[22];
+			cube[22]=cube[10];
+			cube[10]=cube[58];
+			
+			
+			full9=false;
+		
+}	
+
+function rotate12(speed)
+{			
+	var cubeAngle = 0;
+	var start = {angle: cubeAngle};
+	var end = {angle: cubeAngle + 90};
+    var lastAngle=0;                        
+	var tween = new TWEEN.Tween(start)
+	.to(end, speed)
+	.easing( TWEEN.Easing.Exponential.InOut )
+	.onUpdate(function(){
+		cubeAngle=this.angle;    
+		rotateAroundWorldAxis(cube[3], new THREE.Vector3(1,0,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[6], new THREE.Vector3(1,0,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[9], new THREE.Vector3(1,0,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[12], new THREE.Vector3(1,0,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[15], new THREE.Vector3(1,0,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[18], new THREE.Vector3(1,0,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[21], new THREE.Vector3(1,0,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[24], new THREE.Vector3(1,0,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[27], new THREE.Vector3(1,0,0),degreeToRadians(cubeAngle-lastAngle));
+		lastAngle=cubeAngle;                   
+   })
+	.start()
+
+
+			cube[57]=cube[21];
+			cube[21]=cube[3];
+			cube[3]=cube[9];
+			cube[9]=cube[27];
+			cube[27]=cube[57];
+			
+			cube[58]=cube[12];
+			cube[12]=cube[6];
+			cube[6]=cube[18];
+			cube[18]=cube[24];
+			cube[24]=cube[58];
+			
+			full11=false;
+		
+}	
+
+function rotate6(speed)
+{			
+	var cubeAngle = 0;
+	var start = {angle: cubeAngle};
+	var end = {angle: cubeAngle + 90};
+    var lastAngle=0;                        
+	var tween = new TWEEN.Tween(start)
+	.to(end, speed)
+	.easing( TWEEN.Easing.Exponential.InOut )
+	.onUpdate(function(){
+		cubeAngle=this.angle;    
+		rotateAroundWorldAxis(cube[2], new THREE.Vector3(-1,0,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[5], new THREE.Vector3(-1,0,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[8], new THREE.Vector3(-1,0,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[11], new THREE.Vector3(-1,0,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[14], new THREE.Vector3(-1,0,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[17], new THREE.Vector3(-1,0,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[20], new THREE.Vector3(-1,0,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[23], new THREE.Vector3(-1,0,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[26], new THREE.Vector3(-1,0,0),degreeToRadians(cubeAngle-lastAngle));
+		lastAngle=cubeAngle;                   
+   })
+	.start()
+
+
+			cube[57]=cube[2];
+			cube[2]=cube[20];
+			cube[20]=cube[26];
+			cube[26]=cube[8];
+			cube[8]=cube[57];
+			
+			cube[58]=cube[5];
+			cube[5]=cube[11];
+			cube[11]=cube[23];
+			cube[23]=cube[17];
+			cube[17]=cube[58];
+			
+			full2=false;
+		
+}	
+
+function rotate8(speed)
+{			
+	var cubeAngle = 0;
+	var start = {angle: cubeAngle};
+	var end = {angle: cubeAngle + 90};
+    var lastAngle=0;                       
+	var tween = new TWEEN.Tween(start)
+	.to(end, speed)
+	.easing( TWEEN.Easing.Exponential.InOut )
+	.onUpdate(function(){
+		cubeAngle=this.angle;    
+		rotateAroundWorldAxis(cube[2], new THREE.Vector3(1,0,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[5], new THREE.Vector3(1,0,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[8], new THREE.Vector3(1,0,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[11], new THREE.Vector3(1,0,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[14], new THREE.Vector3(1,0,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[17], new THREE.Vector3(1,0,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[20], new THREE.Vector3(1,0,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[23], new THREE.Vector3(1,0,0),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[26], new THREE.Vector3(1,0,0),degreeToRadians(cubeAngle-lastAngle));
+		lastAngle=cubeAngle;                   
+   })
+	.start()
+
+
+			cube[57]=cube[8];
+			cube[8]=cube[26];
+			cube[26]=cube[20];
+			cube[20]=cube[2];
+			cube[2]=cube[57];
+			
+			cube[58]=cube[17];
+			cube[17]=cube[23];
+			cube[23]=cube[11];
+			cube[11]=cube[5];
+			cube[5]=cube[58];
+			
+			
+			full8=false;
+		
+}	
+
+function rotatezpos(speed)
+{
+
+	var cubeAngle = 0;
+	var start = {angle: cubeAngle};
+	var end = {angle: cubeAngle + 90};
+    var lastAngle=0;                     
+	var tween = new TWEEN.Tween(start)
+	.to(end, speed)
+	.easing( TWEEN.Easing.Exponential.InOut )
+	.onUpdate(function(){
+		cubeAngle=this.angle;    
+		rotateAroundWorldAxis(cube[1], new THREE.Vector3(0,0,-1),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[2], new THREE.Vector3(0,0,-1),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[3], new THREE.Vector3(0,0,-1),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[4], new THREE.Vector3(0,0,-1),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[5], new THREE.Vector3(0,0,-1),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[6], new THREE.Vector3(0,0,-1),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[7], new THREE.Vector3(0,0,-1),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[8], new THREE.Vector3(0,0,-1),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[9], new THREE.Vector3(0,0,-1),degreeToRadians(cubeAngle-lastAngle));
+		lastAngle=cubeAngle;                   
+   })
+	.start()
+
+
+			cube[55]=cube[1];
+			cube[1]=cube[3];
+			cube[3]=cube[9];
+			cube[9]=cube[7];
+			cube[7]=cube[55];
+			
+			cube[56]=cube[2];
+			cube[2]=cube[6];
+			cube[6]=cube[8];
+			cube[8]=cube[4];
+			cube[4]=cube[56];
+
+			full5=false;
+			full7=false;
+			full2=false;
+			full8=false;
+			
+}
+
+function rotatezneg(speed)
+{
+
+	var cubeAngle = 0;
+	var start = {angle: cubeAngle};
+	var end = {angle: cubeAngle + 90};
+    var lastAngle=0;                     
+	var tween = new TWEEN.Tween(start)
+	.to(end, speed)
+	.easing( TWEEN.Easing.Exponential.InOut )
+	.onUpdate(function(){
+		cubeAngle=this.angle;    
+		rotateAroundWorldAxis(cube[1], new THREE.Vector3(0,0,1),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[2], new THREE.Vector3(0,0,1),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[3], new THREE.Vector3(0,0,1),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[4], new THREE.Vector3(0,0,1),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[5], new THREE.Vector3(0,0,1),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[6], new THREE.Vector3(0,0,1),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[7], new THREE.Vector3(0,0,1),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[8], new THREE.Vector3(0,0,1),degreeToRadians(cubeAngle-lastAngle));
+		rotateAroundWorldAxis(cube[9], new THREE.Vector3(0,0,1),degreeToRadians(cubeAngle-lastAngle));
+		lastAngle=cubeAngle;                   
+   })
+	.start()
+	
+	
+			cube[55]=cube[7];
+			cube[7]=cube[9];
+			cube[9]=cube[3];
+			cube[3]=cube[1];
+			cube[1]=cube[55];
+			
+			cube[56]=cube[4];
+			cube[4]=cube[8];
+			cube[8]=cube[6];
+			cube[6]=cube[2];
+			cube[2]=cube[56];
+			
+			full5=false;
+			full7=false;
+			full2=false;
+			full8=false;
+			
+}
+
+function rotateAroundWorldAxis(object, axis, radians) {
+    rotWorldMatrix = new THREE.Matrix4();
+    rotWorldMatrix.makeRotationAxis(axis.normalize(), radians);
+    rotWorldMatrix.multiply(object.matrix);       
+    object.matrix = rotWorldMatrix;
+    object.rotation.setFromRotationMatrix(object.matrix);
+};
+
+
+	function addMouseHandler(canvas)
+    {
+    	canvas.addEventListener( 'mousemove', 
+    			function(e) { onMouseMove(e); }, false );
+    	canvas.addEventListener( 'mousedown', 
+    			function(e) { onMouseDown(e); }, false );
+    	canvas.addEventListener( 'mouseup', 
+    			function(e) { onMouseUp(e); }, false );
+    }	
+//////////////////////////////////////////////////////////////////     WINDOW RESIZE         ///////////////////////
+
+ function degreeToRadians(degrees) {
+        return degrees * Math.PI / 180;
+    }
+
+function onWindowResize() {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize( window.innerWidth, window.innerHeight );
+	shuffle.style.left = window.innerWidth-140 + 'px';
+	shcontrols.style.left = window.innerWidth-140 + 'px';
+	console.log(window.innerWidth)
+	if(window.innerWidth<600)
+	{
+		document.getElementById("titleimg").style.visibility = "hidden";
+	}
+	else
+	if(window.innerWidth>600)
+	{
+		document.getElementById("titleimg").style.visibility = "visible";
+	}
+    render();
+}
+
+
+//////////////////////////////////////////////////////////////////     ANIMATE  AND RENDER   ////////////////////// 
+			
+
+			function animate() {
+
+				requestAnimationFrame( animate );
+
+				render();
+				stats.update();
+
+			}
+
+			function render() {
+
+				TWEEN.update();
+				renderer.render( scene, camera );
+
+			}
+
+		</script>
+<img id="titleimg" src="cube_files/title.png" style="width:350px;height:200px;">
+<script>
+				if(window.innerWidth<600)
+				{
+					document.getElementById("titleimg").style.width = 150+"px";
+					document.getElementById("titleimg").style.height = 130+"px";
+				}
+ </script>
+	</body>
+</html>
