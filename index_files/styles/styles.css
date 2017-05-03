@@ -1,0 +1,88 @@
+html, body{
+    margin:0;
+    padding:0;
+    height:100%;
+    overflow-x: hidden;
+    overflow-y: hidden;
+}
+
+/*.parallax{
+    position: fixed;
+    z-index: -1;
+    overflow-x: hidden;
+    height: 500px;
+    width: 100%;
+}*/
+
+.l1Base{
+    position:relative;
+    left:0px;
+    right:0px;
+    top:0px;
+    width:100%;
+    height:700px;
+}
+
+ul{
+    padding-left: 0px;
+    margin-left: 0px;
+}
+
+.name{
+    position:fixed;
+    z-index: 1;
+    /*top:50px;
+    left:50px;
+    height:100px;
+    width:250px;*/
+}
+
+.links{
+    position: fixed;
+    top:500px;
+    z-index: 1;
+    color: whitesmoke;
+}
+
+/*
+.l2Inkpatch{
+    margin-left: 100px;
+}
+
+.l3Circle{
+    width:200px;
+    height:200px
+}*/
+/*
+.l4Ink1{
+    width:800px;
+    height:500px
+}
+
+.l5Ink2{
+    width:800px;
+    height:500px
+}*/
+
+.top{
+    z-index:3;
+}
+
+.jumbotron{
+    padding-top: 500px;
+}
+
+/*.box{
+    position: relative;
+    padding-left: 250px;
+    padding-top: 100px;
+    height: 200px;
+    width: 300px;
+}
+
+.name{
+    padding-left: 250px;
+    padding-top: 100px;
+    height: 200px;
+    width: 300px;
+}*/
