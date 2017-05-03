@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html class="html" lang="en-US">
+ <head>
+     <title>Resume 1.0</title>
+<script type="text/javascript" src="iluzex_files/scripts/glMatrix-0.9.5.min.js"></script>
+<script type="text/javascript" src="iluzex_files/scripts/webgl-utils.js"></script>
+
+<script id="shader-fs" type="x-shader/x-fragment">
+    precision highp float;
+
+    varying vec2 vTextureCoord;
+	varying vec3 vLightWeighting;
+	uniform sampler2D uSampler;
+
+    void main(void) {
+     vec4 textureColor = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t));
+     gl_FragColor = vec4(textureColor.rgb * vLightWeighting, textureColor.a);
+    }
+</script>
+
+<script id="shader-vs" type="x-shader/x-vertex">
+    attribute vec3 aVertexPosition;
+    attribute vec3 aVertexNormal;
+    attribute vec2 aTextureCoord;
+
+    uniform mat4 uMVMatrix;
+    uniform mat4 uPMatrix;
+    uniform mat3 uNMatrix;
+
+    uniform vec3 uAmbientColor;
+
+    uniform vec3 uLightingDirection;
+    uniform vec3 uDirectionalColor;
+
+    uniform bool uUseLighting;
+
+    varying vec2 vTextureCoord;
+    varying vec3 vLightWeighting;
+
+    void main(void) {
+        gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
+        vTextureCoord = aTextureCoord;
+
+            vec3 transformedNormal = uNMatrix * aVertexNormal;
+            float directionalLightWeighting = max(dot(transformedNormal, uLightingDirection), 0.0);
+            vLightWeighting = uAmbientColor + uDirectionalColor * directionalLightWeighting;
+        
+    }
+</script>
+
+
+
+
+
+<script type="text/javascript">
+	
+    var gl;
+
+    function initGL(canvas) {
+        try {
+            gl = canvas.getContext("experimental-webgl");
+            gl.viewportWidth = canvas.width;
+            gl.viewportHeight = canvas.height;
+        } catch (e) {
+        }
+        if (!gl) {
+            alert("Could not initialise WebGL, sorry :-(");
+        }
+    }
+
+
+    function getShader(gl, id) {
+        var shaderScript = document.getElementById(id);
+        if (!shaderScript) {
+            return null;
+        }
+
+        var str = "";
+        var k = shaderScript.firstChild;
+        while (k) {
+            if (k.nodeType == 3) {
+                str += k.textContent;
+            }
+            k = k.nextSibling;
+        }
+
+        var shader;
+        if (shaderScript.type == "x-shader/x-fragment") {
+            shader = gl.createShader(gl.FRAGMENT_SHADER);
+        } else if (shaderScript.type == "x-shader/x-vertex") {
+            shader = gl.createShader(gl.VERTEX_SHADER);
+        } else {
+            return null;
+        }
+
+        gl.shaderSource(shader, str);
+        gl.compileShader(shader);
+
+        if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+            alert(gl.getShaderInfoLog(shader));
+            return null;
+        }
+
+        return shader;
+    }
+
+
+    var shaderProgram;
+
+   function initShaders() {
+        var fragmentShader = getShader(gl, "shader-fs");
+        var vertexShader = getShader(gl, "shader-vs");
+
+        shaderProgram = gl.createProgram();
+        gl.attachShader(shaderProgram, vertexShader);
+        gl.attachShader(shaderProgram, fragmentShader);
+        gl.linkProgram(shaderProgram);
+
+        if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
+            alert("Could not initialise shaders");
+        }
+
+        gl.useProgram(shaderProgram);
+
+        shaderProgram.vertexPositionAttribute = gl.getAttribLocation(shaderProgram, "aVertexPosition");
+        gl.enableVertexAttribArray(shaderProgram.vertexPositionAttribute);
+
+        shaderProgram.vertexNormalAttribute = gl.getAttribLocation(shaderProgram, "aVertexNormal");
+        gl.enableVertexAttribArray(shaderProgram.vertexNormalAttribute);
+
+        shaderProgram.textureCoordAttribute = gl.getAttribLocation(shaderProgram, "aTextureCoord");
+        gl.enableVertexAttribArray(shaderProgram.textureCoordAttribute);
+
+        shaderProgram.pMatrixUniform = gl.getUniformLocation(shaderProgram, "uPMatrix");
+        shaderProgram.mvMatrixUniform = gl.getUniformLocation(shaderProgram, "uMVMatrix");
+        shaderProgram.nMatrixUniform = gl.getUniformLocation(shaderProgram, "uNMatrix");
+        shaderProgram.samplerUniform = gl.getUniformLocation(shaderProgram, "uSampler");
+        shaderProgram.useLightingUniform = gl.getUniformLocation(shaderProgram, "uUseLighting");
+        shaderProgram.ambientColorUniform = gl.getUniformLocation(shaderProgram, "uAmbientColor");
+        shaderProgram.lightingDirectionUniform = gl.getUniformLocation(shaderProgram, "uLightingDirection");
+        shaderProgram.directionalColorUniform = gl.getUniformLocation(shaderProgram, "uDirectionalColor");
+		
+    }
+
+
+
+    var mvMatrix = mat4.create();
+ 
+    var pMatrix = mat4.create();
+
+  
+  
+    function handleLoadedTexture(texture) {
+        gl.bindTexture(gl.TEXTURE_2D, texture);
+        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, texture.image);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+        gl.bindTexture(gl.TEXTURE_2D, null);
+    }
+
+	
+	
+	var cTexture1;
+	
+    function initTexture1() {
+        cTexture1 = gl.createTexture();
+        cTexture1.image = new Image();
+        cTexture1.image.onload = function () {
+            handleLoadedTexture(cTexture1)
+        }
+
+        cTexture1.image.src = "iluzex_files/images/cTextureprint1.jpg";
+    }
+
+	var cTexture12;
+    function initTexture12() {
+        cTexture12 = gl.createTexture();
+        cTexture12.image = new Image();
+        cTexture12.image.onload = function () {
+            handleLoadedTexture(cTexture12)
+        }
+
+        cTexture12.image.src = "iluzex_files/images/cTextureprint12.jpg";
+    }
+	
+	var cTexture2;
+    function initTexture2() {
+        cTexture2 = gl.createTexture();
+        cTexture2.image = new Image();
+        cTexture2.image.onload = function () {
+            handleLoadedTexture(cTexture2)
+        }
+
+        cTexture2.image.src = "iluzex_files/images/cTextureprint2.jpg";
+    }
+  
+    var cTexture22;
+    function initTexture22() {
+        cTexture22 = gl.createTexture();
+        cTexture22.image = new Image();
+        cTexture22.image.onload = function () {
+            handleLoadedTexture(cTexture22)
+        }
+
+        cTexture22.image.src = "iluzex_files/images/cTextureprint22.jpg";
+    }
+  
+  
+    var cTexture3;
+    function initTexture3() {
+        cTexture3 = gl.createTexture();
+        cTexture3.image = new Image();
+        cTexture3.image.onload = function () {
+            handleLoadedTexture(cTexture3)
+        }
+
+        cTexture3.image.src = "iluzex_files/images/cTextureprint3.jpg";
+    }
+	
+	var cTexture32;
+    function initTexture32() {
+        cTexture32 = gl.createTexture();
+        cTexture32.image = new Image();
+        cTexture32.image.onload = function () {
+            handleLoadedTexture(cTexture32)
+        }
+
+        cTexture32.image.src = "iluzex_files/images/cTextureprint32.jpg";
+    }
+	
+	var cTexture4;
+    function initTexture4() {
+        cTexture4 = gl.createTexture();
+        cTexture4.image = new Image();
+        cTexture4.image.onload = function () {
+            handleLoadedTexture(cTexture4)
+        }
+
+        cTexture4.image.src = "iluzex_files/images/cTextureprint4.jpg";
+    }
+	
+	var cTexture42;
+    function initTexture42() {
+        cTexture42 = gl.createTexture();
+        cTexture42.image = new Image();
+        cTexture42.image.onload = function () {
+            handleLoadedTexture(cTexture42)
+        }
+
+        cTexture42.image.src = "iluzex_files/images/cTextureprint42.jpg";
+    }
+	
+	var cTexture5;
+    function initTexture5() {
+        cTexture5 = gl.createTexture();
+        cTexture5.image = new Image();
+        cTexture5.image.onload = function () {
+            handleLoadedTexture(cTexture5)
+        }
+
+        cTexture5.image.src = "iluzex_files/images/cTextureprint5.jpg";
+    }
+	
+	var cTexture52;
+    function initTexture52() {
+        cTexture52 = gl.createTexture();
+        cTexture52.image = new Image();
+        cTexture52.image.onload = function () {
+            handleLoadedTexture(cTexture52)
+        }
+
+        cTexture52.image.src = "iluzex_files/images/cTextureprint52.jpg";
+    }
+	
+  
+    function setMatrixUniforms() {
+        gl.uniformMatrix4fv(shaderProgram.pMatrixUniform, false, pMatrix);
+        gl.uniformMatrix4fv(shaderProgram.mvMatrixUniform, false, mvMatrix);
+
+        var normalMatrix = mat3.create();
+        mat4.toInverseMat3(mvMatrix, normalMatrix);
+        mat3.transpose(normalMatrix);
+        gl.uniformMatrix3fv(shaderProgram.nMatrixUniform, false, normalMatrix);
+
+    }
+
+ 
+ 
+ 
+ 
+  function degToRad(degrees) {
+        return degrees * Math.PI / 180;
+    }
+ 
+var mouseDown = false;
+var lastMouseX = null; 
+var yawRate = null;
+var yaw = 0;
+var lastTime = 0;
+   
+	 function handleMouseMove(event) {
+      
+		move=true;
+        var newX = event.clientX;
+		
+        var deltaX = newX - lastMouseX;
+		if(deltaX > 10)
+		{
+			
+			yawRate=-0.001*(deltaX/5);
+		}
+		if(deltaX < 10 )
+		{
+			
+			yawRate=0.001*(-deltaX/5);
+			
+		}
+		if(deltaX = 0)
+		{
+			yawRate=0;
+		}
+
+		lastMouseX = newX;
+	
+    }
+	
+	var move;
+	
+	function animate() {
+		if(move==true)
+		{
+        var timeNow = new Date().getTime();
+        if (lastTime != 0) {
+            var elapsed = timeNow - lastTime;
+
+            if(yawRate!=0)
+            yaw += yawRate * elapsed;
+		
+			if(yaw < -48){
+				yaw=-48;
+			}
+			else if(yaw > 48){
+				yaw=48;
+			}
+			
+        }
+        lastTime = timeNow;
+		
+		}
+    }
+	
+	
+	
+	
+   
+	
+		
+    
+	var cuboidVertexPositionBuffer1;
+    var cuboidVertexIndexBuffer1;
+	
+	var cuboidVertexPositionBuffer2;
+    var cuboidVertexIndexBuffer2;
+	
+	var cuboidVertexPositionBuffer3;
+    var cuboidVertexIndexBuffer3;
+	
+	var cuboidVertexPositionBuffer4;
+    var cuboidVertexIndexBuffer4;
+	
+	var cuboidVertexPositionBuffer5;
+    var cuboidVertexIndexBuffer5;
+	
+	var defaultTextureCoordBuffer;
+
+    function initBuffers() {
+		
+		
+        cuboidVertexPositionBuffer1 = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, cuboidVertexPositionBuffer1);
+        vertices = [
+	
+			// Front face
+			-0.0075,   0.0325,  0.0,
+             0.0075,   0.0325,  0.0,
+             0.0075,  -0.0325,  0.0,
+			-0.0075,  -0.0325,  0.0,
+            
+
+            // Back face
+            -0.0075,  0.0325, -0.07,
+             0.0075,  0.0325, -0.07,
+             0.0075, -0.0325, -0.07,
+			-0.0075, -0.0325, -0.07,
+
+            // Top face
+            -0.0075,  0.0325,  0.0,
+             0.0075,  0.0325,  0.0,
+             0.0075,  0.0325, -0.07,
+            -0.0075,  0.0325, -0.07,
+
+            // Bottom face
+            -0.0075, -0.0325,  0.0,
+             0.0075, -0.0325,  0.0,
+             0.0075, -0.0325, -0.07,
+            -0.0075, -0.0325, -0.07,
+
+            // Right face
+           
+			 0.0075,  0.0325,  0.0,
+			 0.0075, -0.0325,  0.0,
+			 0.0075, -0.0325, -0.07,
+			 0.0075,  0.0325, -0.07,
+            
+            // Left face
+            -0.0075,  0.0325,  0.0,
+            -0.0075,  0.0325, -0.07,
+            -0.0075, -0.0325, -0.07,
+            -0.0075, -0.0325,  0.0
+
+            
+		   ];
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+        cuboidVertexPositionBuffer1.itemSize = 3;
+        cuboidVertexPositionBuffer1.numItems = 24;
+
+       
+		
+        cuboidVertexIndexBuffer1 = gl.createBuffer();
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, cuboidVertexIndexBuffer1);
+        var cubeVertexIndices = [
+            0, 1, 2,      0, 2, 3,    // Front face
+            4, 5, 6,      4, 6, 7,    // Back face
+            8, 9, 10,     8, 10, 11,  // Top face
+            12, 13, 14,   12, 14, 15, // Bottom face
+            16, 17, 18,   16, 18, 19, // Right face
+            20, 21, 22,   20, 22, 23  // Left face
+        ];
+        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(cubeVertexIndices), gl.STATIC_DRAW);
+        cuboidVertexIndexBuffer1.itemSize = 1;
+        cuboidVertexIndexBuffer1.numItems = 36;
+    
+		//---------------------------------------------------------------------------------------------
+		cuboidVertexPositionBuffer2 = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, cuboidVertexPositionBuffer2);
+        vertices = [
+			// Front face
+			-0.0075,   0.0325,  0.0,
+             0.0075,   0.0325,  0.0,
+             0.0075,  -0.0325,  0.0,
+			-0.0075,  -0.0325,  0.0,
+            
+
+            // Back face
+            -0.0075,  0.0325, -0.07,
+             0.0075,  0.0325, -0.07,
+             0.0075, -0.0325, -0.07,
+			-0.0075, -0.0325, -0.07,
+
+            // Top face
+            -0.0075,  0.0325,  0.0,
+             0.0075,  0.0325,  0.0,
+             0.0075,  0.0325, -0.07,
+            -0.0075,  0.0325, -0.07,
+
+            // Bottom face
+            -0.0075, -0.0325,  0.0,
+             0.0075, -0.0325,  0.0,
+             0.0075, -0.0325, -0.07,
+            -0.0075, -0.0325, -0.07,
+
+            // Right face
+           
+			 0.0075,  0.0325,  0.0,
+			 0.0075, -0.0325,  0.0,
+			 0.0075, -0.0325, -0.07,
+			 0.0075,  0.0325, -0.07,
+            
+            // Left face
+            -0.0075,  0.0325,  0.0,
+            -0.0075,  0.0325, -0.07,
+            -0.0075, -0.0325, -0.07,
+            -0.0075, -0.0325,  0.0
+           
+		   ];
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+        cuboidVertexPositionBuffer2.itemSize = 3;
+        cuboidVertexPositionBuffer2.numItems = 24;
+
+       
+
+        cuboidVertexIndexBuffer2 = gl.createBuffer();
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, cuboidVertexIndexBuffer2);
+        var cubeVertexIndices = [
+            0, 1, 2,      0, 2, 3,    // Front face
+            4, 5, 6,      4, 6, 7,    // Back face
+            8, 9, 10,     8, 10, 11,  // Top face
+            12, 13, 14,   12, 14, 15, // Bottom face
+            16, 17, 18,   16, 18, 19, // Right face
+            20, 21, 22,   20, 22, 23  // Left face
+        ];
+        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(cubeVertexIndices), gl.STATIC_DRAW);
+        cuboidVertexIndexBuffer2.itemSize = 1;
+        cuboidVertexIndexBuffer2.numItems = 36;
+	
+	
+	//-----------------------------------------------------------------------
+	
+	cuboidVertexPositionBuffer3 = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, cuboidVertexPositionBuffer3);
+        vertices = [
+			-0.0075,   0.0325,  0.0,
+             0.0075,   0.0325,  0.0,
+             0.0075,  -0.0325,  0.0,
+			-0.0075,  -0.0325,  0.0,
+            
+
+            // Back face
+            -0.0075,  0.0325, -0.07,
+             0.0075,  0.0325, -0.07,
+             0.0075, -0.0325, -0.07,
+			-0.0075, -0.0325, -0.07,
+
+            // Top face
+            -0.0075,  0.0325,  0.0,
+             0.0075,  0.0325,  0.0,
+             0.0075,  0.0325, -0.07,
+            -0.0075,  0.0325, -0.07,
+
+            // Bottom face
+            -0.0075, -0.0325,  0.0,
+             0.0075, -0.0325,  0.0,
+             0.0075, -0.0325, -0.07,
+            -0.0075, -0.0325, -0.07,
+
+            // Right face
+           
+			 0.0075,  0.0325,  0.0,
+			 0.0075, -0.0325,  0.0,
+			 0.0075, -0.0325, -0.07,
+			 0.0075,  0.0325, -0.07,
+            
+            // Left face
+            -0.0075,  0.0325,  0.0,
+            -0.0075,  0.0325, -0.07,
+            -0.0075, -0.0325, -0.07,
+            -0.0075, -0.0325,  0.0
+           
+		   ];
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+        cuboidVertexPositionBuffer3.itemSize = 3;
+        cuboidVertexPositionBuffer3.numItems = 24;
+
+       
+
+        cuboidVertexIndexBuffer3 = gl.createBuffer();
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, cuboidVertexIndexBuffer3);
+        var cubeVertexIndices = [
+            0, 1, 2,      0, 2, 3,    // Front face
+            4, 5, 6,      4, 6, 7,    // Back face
+            8, 9, 10,     8, 10, 11,  // Top face
+            12, 13, 14,   12, 14, 15, // Bottom face
+            16, 17, 18,   16, 18, 19, // Right face
+            20, 21, 22,   20, 22, 23  // Left face
+        ];
+        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(cubeVertexIndices), gl.STATIC_DRAW);
+        cuboidVertexIndexBuffer3.itemSize = 1;
+        cuboidVertexIndexBuffer3.numItems = 36;
+	
+	//-----------------------------------------------------------------------------------------------
+		cuboidVertexPositionBuffer4 = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, cuboidVertexPositionBuffer4);
+        vertices = [
+			// Front face
+			-0.0075,   0.0325,  0.0,
+             0.0075,   0.0325,  0.0,
+             0.0075,  -0.0325,  0.0,
+			-0.0075,  -0.0325,  0.0,
+            
+
+            // Back face
+            -0.0075,  0.0325, -0.07,
+             0.0075,  0.0325, -0.07,
+             0.0075, -0.0325, -0.07,
+			-0.0075, -0.0325, -0.07,
+
+            // Top face
+            -0.0075,  0.0325,  0.0,
+             0.0075,  0.0325,  0.0,
+             0.0075,  0.0325, -0.07,
+            -0.0075,  0.0325, -0.07,
+
+            // Bottom face
+            -0.0075, -0.0325,  0.0,
+             0.0075, -0.0325,  0.0,
+             0.0075, -0.0325, -0.07,
+            -0.0075, -0.0325, -0.07,
+
+            // Right face
+           
+			 0.0075,  0.0325,  0.0,
+			 0.0075, -0.0325,  0.0,
+			 0.0075, -0.0325, -0.07,
+			 0.0075,  0.0325, -0.07,
+            
+            // Left face
+            -0.0075,  0.0325,  0.0,
+            -0.0075,  0.0325, -0.07,
+            -0.0075, -0.0325, -0.07,
+            -0.0075, -0.0325,  0.0
+           
+		   ];
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+        cuboidVertexPositionBuffer4.itemSize = 3;
+        cuboidVertexPositionBuffer4.numItems = 24;
+
+       
+
+        cuboidVertexIndexBuffer4 = gl.createBuffer();
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, cuboidVertexIndexBuffer4);
+        var cubeVertexIndices = [
+            0, 1, 2,      0, 2, 3,    // Front face
+            4, 5, 6,      4, 6, 7,    // Back face
+            8, 9, 10,     8, 10, 11,  // Top face
+            12, 13, 14,   12, 14, 15, // Bottom face
+            16, 17, 18,   16, 18, 19, // Right face
+            20, 21, 22,   20, 22, 23  // Left face
+        ];
+        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(cubeVertexIndices), gl.STATIC_DRAW);
+        cuboidVertexIndexBuffer4.itemSize = 1;
+        cuboidVertexIndexBuffer4.numItems = 36;
+	
+	//-----------------------------------------------------------------------
+	
+		cuboidVertexPositionBuffer5 = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, cuboidVertexPositionBuffer5);
+        vertices = [
+			// Front face
+			-0.0075,   0.0325,  0.0,
+             0.0075,   0.0325,  0.0,
+             0.0075,  -0.0325,  0.0,
+			-0.0075,  -0.0325,  0.0,
+            
+
+            // Back face
+            -0.0075,  0.0325, -0.07,
+             0.0075,  0.0325, -0.07,
+             0.0075, -0.0325, -0.07,
+			-0.0075, -0.0325, -0.07,
+
+            // Top face
+            -0.0075,  0.0325,  0.0,
+             0.0075,  0.0325,  0.0,
+             0.0075,  0.0325, -0.07,
+            -0.0075,  0.0325, -0.07,
+
+            // Bottom face
+            -0.0075, -0.0325,  0.0,
+             0.0075, -0.0325,  0.0,
+             0.0075, -0.0325, -0.07,
+            -0.0075, -0.0325, -0.07,
+
+            // Right face
+           
+			 0.0075,  0.0325,  0.0,
+			 0.0075, -0.0325,  0.0,
+			 0.0075, -0.0325, -0.07,
+			 0.0075,  0.0325, -0.07,
+            
+            // Left face
+            -0.0075,  0.0325,  0.0,
+            -0.0075,  0.0325, -0.07,
+            -0.0075, -0.0325, -0.07,
+            -0.0075, -0.0325,  0.0
+           
+		   ];
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+        cuboidVertexPositionBuffer5.itemSize = 3;
+        cuboidVertexPositionBuffer5.numItems = 24;
+
+        
+		
+
+        cuboidVertexIndexBuffer5 = gl.createBuffer();
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, cuboidVertexIndexBuffer5);
+        var cubeVertexIndices = [
+            0, 1, 2,      0, 2, 3,    // Front face
+            4, 5, 6,      4, 6, 7,    // Back face
+            8, 9, 10,     8, 10, 11,  // Top face
+            12, 13, 14,   12, 14, 15, // Bottom face
+            16, 17, 18,   16, 18, 19, // Right face
+            20, 21, 22,   20, 22, 23  // Left face
+        ];
+        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(cubeVertexIndices), gl.STATIC_DRAW);
+        cuboidVertexIndexBuffer5.itemSize = 1;
+        cuboidVertexIndexBuffer5.numItems = 36;
+		
+		//===================================================================================================
+		
+		defaultTextureCoordBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, defaultTextureCoordBuffer);
+        var textureCoords = [
+          // Front face
+          0.33, 1.0,
+          0.67, 1.0,
+		  0.67, 0.0,
+		  0.33, 0.0,
+          
+
+          // Back face
+          1.0, 0.0,
+          1.0, 1.0,
+          0.0, 1.0,
+          0.0, 0.0,
+
+          // Top face
+          0.0, 1.0,
+          0.0, 0.0,
+          1.0, 0.0,
+          1.0, 1.0,
+
+          // Bottom face
+          1.0, 1.0,
+          0.0, 1.0,
+          0.0, 0.0,
+          1.0, 0.0,
+
+          // Right face
+          0.67, 1.0,
+          0.67, 0.0,
+		  1.0, 0.0,
+          1.0, 1.0,
+          
+
+          // Left face
+          0.33, 1.0,
+          0.0, 1.0,
+		  0.0, 0.0,
+          0.33, 0.0
+          
+        ];
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(textureCoords), gl.STATIC_DRAW);
+        defaultTextureCoordBuffer.itemSize = 2;
+        defaultTextureCoordBuffer.numItems = 24;
+		
+}
+
+
+    
+	
+
+    function drawScene() {
+        gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+        mat4.perspective(50, gl.viewportWidth / gl.viewportHeight, 0.05, 100.0, pMatrix);
+
+     		
+       //---------------------------------------------------------------------------------------------------------------------
+		mat4.identity(mvMatrix);
+		mat4.translate(mvMatrix, [-0.06, 0.0, -0.1]);
+		
+		mat4.rotate(mvMatrix, degToRad(-yaw), [0, 1, 0]);
+	    gl.bindBuffer(gl.ARRAY_BUFFER, cuboidVertexPositionBuffer1);
+        gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, cuboidVertexPositionBuffer1.itemSize, gl.FLOAT, false, 0, 0);
+	
+	
+	
+		
+		gl.bindBuffer(gl.ARRAY_BUFFER, defaultTextureCoordBuffer);
+        gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, defaultTextureCoordBuffer.itemSize, gl.FLOAT, false, 0, 0);
+		
+		
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, cuboidVertexIndexBuffer1);
+		
+		gl.bindBuffer(gl.ARRAY_BUFFER, cuboidVertexIndexBuffer1);
+        gl.vertexAttribPointer(shaderProgram.vertexNormalAttribute, cuboidVertexIndexBuffer1.itemSize, gl.FLOAT, false, 0, 0);
+		
+		
+		gl.activeTexture(gl.TEXTURE0);
+		if(yaw<0)
+		{
+			gl.bindTexture(gl.TEXTURE_2D, cTexture1);
+		}
+		else
+		{
+			gl.bindTexture(gl.TEXTURE_2D, cTexture12);
+		}
+        gl.uniform1i(shaderProgram.samplerUniform, 0);
+		
+		
+		    gl.uniform1i(shaderProgram.useLightingUniform, 1.0);
+        
+            gl.uniform3f(shaderProgram.ambientColorUniform,0.8,0.8,0.8);
+
+            var lightingDirection = [-0.25,-0.25,-1.0 ];
+            var adjustedLD = vec3.create();
+            vec3.normalize(lightingDirection, adjustedLD);
+            vec3.scale(adjustedLD, -1);
+            gl.uniform3fv(shaderProgram.lightingDirectionUniform, adjustedLD);
+
+            gl.uniform3f(shaderProgram.directionalColorUniform,0.2,0.2,0.2);
+        
+		
+        
+		setMatrixUniforms();
+	
+        gl.drawElements(gl.TRIANGLES, cuboidVertexIndexBuffer1.numItems, gl.UNSIGNED_SHORT, 0);
+		
+		//-----------------------------------------------------------------------------------------------------------------
+
+		
+		mat4.identity(mvMatrix);
+		
+
+		mat4.translate(mvMatrix, [-0.03, 0.0, -0.1]);
+		
+		mat4.rotate(mvMatrix, degToRad(-yaw), [0, 1, 0]);
+        gl.bindBuffer(gl.ARRAY_BUFFER, cuboidVertexPositionBuffer2);
+        gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, cuboidVertexPositionBuffer2.itemSize, gl.FLOAT, false, 0, 0);
+		
+		gl.bindBuffer(gl.ARRAY_BUFFER, defaultTextureCoordBuffer);
+        gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, defaultTextureCoordBuffer.itemSize, gl.FLOAT, false, 0, 0);
+		
+		gl.activeTexture(gl.TEXTURE0);
+		if(yaw<0)
+		{
+			gl.bindTexture(gl.TEXTURE_2D, cTexture2);
+		}
+		else
+		{
+			gl.bindTexture(gl.TEXTURE_2D, cTexture22);
+		}
+        gl.uniform1i(shaderProgram.samplerUniform, 0);
+		
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, cuboidVertexIndexBuffer2);
+        setMatrixUniforms();
+	
+        gl.drawElements(gl.TRIANGLES, cuboidVertexIndexBuffer2.numItems, gl.UNSIGNED_SHORT, 0);
+		
+		//-----------------------------------------------------------------------------------------------------------------
+	
+		mat4.identity(mvMatrix);
+		
+		mat4.translate(mvMatrix, [0.0, 0.0, -0.1]);
+		
+		mat4.rotate(mvMatrix, degToRad(-yaw), [0, 1, 0]);
+        gl.bindBuffer(gl.ARRAY_BUFFER, cuboidVertexPositionBuffer3);
+        gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, cuboidVertexPositionBuffer3.itemSize, gl.FLOAT, false, 0, 0);
+
+		
+		gl.bindBuffer(gl.ARRAY_BUFFER, defaultTextureCoordBuffer);
+        gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, defaultTextureCoordBuffer.itemSize, gl.FLOAT, false, 0, 0);
+		
+		gl.activeTexture(gl.TEXTURE0);
+        if(yaw<0)
+		{
+			gl.bindTexture(gl.TEXTURE_2D, cTexture3);
+		}
+		else
+		{
+			gl.bindTexture(gl.TEXTURE_2D, cTexture32);
+		}
+        gl.uniform1i(shaderProgram.samplerUniform, 0);
+		
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, cuboidVertexIndexBuffer3);
+        setMatrixUniforms();
+	
+        gl.drawElements(gl.TRIANGLES, cuboidVertexIndexBuffer3.numItems, gl.UNSIGNED_SHORT, 0);
+		
+		//-----------------------------------------------------------------------------------------------------------------
+		
+		mat4.identity(mvMatrix);
+	
+		mat4.translate(mvMatrix, [0.03, 0.0, -0.1]);
+		
+		mat4.rotate(mvMatrix, degToRad(-yaw), [0, 1, 0]);
+        gl.bindBuffer(gl.ARRAY_BUFFER, cuboidVertexPositionBuffer4);
+        gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, cuboidVertexPositionBuffer4.itemSize, gl.FLOAT, false, 0, 0);
+
+		
+		gl.bindBuffer(gl.ARRAY_BUFFER, defaultTextureCoordBuffer);
+        gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, defaultTextureCoordBuffer.itemSize, gl.FLOAT, false, 0, 0);
+		
+		gl.activeTexture(gl.TEXTURE0);
+		if(yaw<0)
+		{
+			gl.bindTexture(gl.TEXTURE_2D, cTexture4);
+		}
+		else
+		{
+			gl.bindTexture(gl.TEXTURE_2D, cTexture42);
+		}
+        gl.uniform1i(shaderProgram.samplerUniform, 0);
+		
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, cuboidVertexIndexBuffer4);
+        setMatrixUniforms();
+	
+        gl.drawElements(gl.TRIANGLES, cuboidVertexIndexBuffer4.numItems, gl.UNSIGNED_SHORT, 0);
+		
+		//-----------------------------------------------------------------------------------------------------------------
+		
+		mat4.identity(mvMatrix);
+	
+		mat4.translate(mvMatrix, [0.06, 0.0, -0.1]);
+		
+		mat4.rotate(mvMatrix, degToRad(-yaw), [0, 1, 0]);
+        gl.bindBuffer(gl.ARRAY_BUFFER, cuboidVertexPositionBuffer5);
+        gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, cuboidVertexPositionBuffer5.itemSize, gl.FLOAT, false, 0, 0);
+
+		
+		gl.bindBuffer(gl.ARRAY_BUFFER, defaultTextureCoordBuffer);
+        gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, defaultTextureCoordBuffer.itemSize, gl.FLOAT, false, 0, 0);
+		
+		gl.activeTexture(gl.TEXTURE0);
+        if(yaw<0)
+		{
+			gl.bindTexture(gl.TEXTURE_2D, cTexture5);
+		}
+		else
+		{
+			gl.bindTexture(gl.TEXTURE_2D, cTexture52);
+		}
+        gl.uniform1i(shaderProgram.samplerUniform, 0);
+		
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, cuboidVertexIndexBuffer5);
+        setMatrixUniforms();
+	
+        gl.drawElements(gl.TRIANGLES, cuboidVertexIndexBuffer5.numItems, gl.UNSIGNED_SHORT, 0);
+		
+		
+		
+    }
+	
+window.onload = function() {
+    if(!window.location.hash) {
+        window.location = window.location + '#loaded';
+        window.location.reload();
+    }
+}
+
+	function tick() {
+        requestAnimFrame(tick);
+		animate();
+        drawScene();
+		
+    }
+
+   function webGLStart() {
+		//window.onload();
+        var canvas = document.getElementById("18901");
+        initGL(canvas);
+        initShaders();
+        initBuffers();
+		initTexture1();
+		initTexture12();
+		initTexture2();
+		initTexture22();
+		initTexture3();
+		initTexture32();
+		initTexture4();
+		initTexture42();
+		initTexture5();
+		initTexture52();
+        
+
+        gl.clearColor(0.0, 0.0, 0.0, 1.0);
+        gl.enable(gl.DEPTH_TEST);
+
+        canvas.onmousemove = handleMouseMove;
+
+        tick();
+		
+    }
+	
+	
+</script>
+
+  <script type="text/javascript">
+   if(typeof Muse == "undefined") window.Muse = {}; window.Muse.assets = {"required":["jquery-1.8.3.min.js", "museutils.js", "jquery.scrolleffects.js", "jquery.watch.js", "index.css"], "outOfDate":[]};
+</script>
+  
+  <meta http-equiv="Content-type" content="text/html;charset=UTF-8"/>
+  <meta name="generator" content="2015.0.0.309"/>
+ 
+<!-->
+  <link rel="stylesheet" type="text/css" href="iluzex_files/css/site_global.css?4052507572"/>
+  <-->
+  <link rel="stylesheet" type="text/css" href="iluzex_files/css/index.css?399785859" id="pagesheet"/>
+  
+  <script type="text/javascript">
+   document.documentElement.className += ' js';
+var __adobewebfontsappname__ = "muse";
+</script>
+  
+  <script type="text/javascript">
+   document.write('\x3Cscript src="' + (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//webfonts.creativecloud.com/indie-flower:n4:default.js" type="text/javascript">\x3C/script>');
+</script>
+
+<style>
+html 
+{overflow-x: hidden;
+
+}
+</style>
+
+
+   </head>
+
+ <body BGCOLOR="BLACK"onload="webGLStart();">
+   
+    <canvas id="18901" style="border: none;position:absolute; position:fixed; align:left; padding-left: 0; margin-left: auto;" width="1300" height="640" ></canvas>
+  
+ <div class="clearfix" id="page">
+   <div class="position_content" id="page_position_content">
+    <div class="browser_width" id="u208-bw">
+     <div class="pinned-colelem" id="u208"></div>
+    </div>
+    <div class="clip_frame pinned-colelem" id="u227">
+     <img class="block" id="u227_img" src="iluzex_files/images/illuzex.jpg" alt="" width="176" height="59"/>
+    </div>
+    <div class="clearfix colelem" id="u296-3">
+     <p>&nbsp;</p>
+    </div>
+    <div class="verticalspacer"></div>
+    <div class="clearfix colelem" id="pu585">
+     <div class="browser_width grpelem" id="u585-bw">
+      <div id="u585">
+       <div class="clearfix" id="u585_align_to_page">
+        <div class="position_content" id="u585_position_content">
+         <div class="clearfix colelem" id="pu534">
+          <div class="clip_frame ose_pre_init grpelem" id="u534">
+           <img class="block" id="u534_img" src="iluzex_files/images/jquery.jpg" alt="" width="176" height="240"/>
+          </div>
+          <div class="clip_frame ose_pre_init grpelem" id="u524">
+           <img class="block" id="u524_img" src="iluzex_files/images/html.jpg" alt="" width="231" height="320"/>
+          </div>
+         </div>
+         <div class="clearfix colelem" id="pppu508">
+          <div class="clearfix grpelem" id="ppu508">
+           <div class="clearfix colelem" id="pu508">
+            <div class="clip_frame ose_pre_init grpelem" id="u508">
+             <img class="block" id="u508_img" src="iluzex_files/images/c.jpg" alt="" width="194" height="151"/>
+            </div>
+            <div class="clip_frame ose_pre_init grpelem" id="u514">
+             <img class="block" id="u514_img" src="iluzex_files/images/c--.jpg" alt="" width="175" height="204"/>
+            </div>
+           </div>
+           <img class="colelem" id="u319-5" alt="&nbsp;More skills on the way......." width="561" height="65" src="iluzex_files/images/u319-5.png"/>
+          </div>
+          <div class="clip_frame ose_pre_init grpelem" id="u529">
+           <img class="block" id="u529_img" src="iluzex_files/images/java.jpg" alt="" width="327" height="231"/>
+          </div>
+         </div>
+         <div class="rgba-background colelem" id="u566"></div>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="clip_frame ose_pre_init grpelem" id="u519">
+      <img class="block" id="u519_img" src="iluzex_files/images/css.png" alt="" width="308" height="308"/>
+     </div>
+     <div class="clip_frame ose_pre_init grpelem" id="u539">
+      <img class="block" id="u539_img" src="iluzex_files/images/jscript.jpg" alt="" width="246" height="302"/>
+     </div>
+     <div class="clip_frame ose_pre_init grpelem" id="u544" data-mu-ie-matrix="progid:DXImageTransform.Microsoft.Matrix(M11=0.9976,M12=0.0698,M21=-0.0698,M22=0.9976,SizingMethod='auto expand')" data-mu-ie-matrix-dx="-5" data-mu-ie-matrix-dy="-12">
+      <img class="block" id="u544_img" src="iluzex_files/images/webgl.jpg" alt="" width="346" height="164"/>
+     </div>
+     <div class="browser_width grpelem" id="u200-5-bw">
+      <img id="u200-5" alt="&nbsp;My skills" width="1160" height="149" src="iluzex_files/images/u200-5.png"/>
+     </div>
+     <div class="browser_width grpelem" id="u83-bw">
+      <div id="u83"></div>
+     </div>
+     <div class="clearfix grpelem" id="u377-9">
+      <p id="u377">&nbsp;</p>
+      <p id="u377-2">&nbsp;</p>
+      <p id="u377-3">&nbsp;</p>
+      <p id="u377-4">&nbsp;</p>
+      <p id="u377-7"><span id="u377-5">&nbsp;</span><span id="u377-6">If you want me to design your web site's front end or just&nbsp; want a custom 3d canvas like the one at top</span></p>
+     </div>
+     <div class="clearfix grpelem" id="u565-3">
+      <p>&nbsp;</p>
+     </div>
+     <img class="grpelem" id="u368-20" alt="&nbsp;Contact Me : Himanshu Chandra himanshuchandra189@outlook.com 9868493115 D.o.b: 18/06/1996 " width="404" height="241" src="iluzex_files/images/u368-20.png"/>
+    </div>
+   </div>
+  </div>
+
+  <script type="text/javascript">
+   if (document.location.protocol != 'https:') document.write('\x3Cscript src="http://musecdn.businesscatalyst.com/scripts/4.0/jquery-1.8.3.min.js" type="text/javascript">\x3C/script>');
+</script>
+  <script type="text/javascript">
+   window.jQuery || document.write('\x3Cscript src="iluzex_files/scripts/jquery-1.8.3.min.js" type="text/javascript">\x3C/script>');
+</script>
+  <script src="iluzex_files/scripts/museutils.js?183364071" type="text/javascript"></script>
+  <script src="iluzex_files/scripts/jquery.scrolleffects.js?3860644955" type="text/javascript"></script>
+  <script src="iluzex_files/scripts/jquery.watch.js?71412426" type="text/javascript"></script>
+
+  <script type="text/javascript">
+   $(document).ready(function() { try {
+(function(){var a={},b=function(a){if(a.match(/^rgb/))return a=a.replace(/\s+/g,"").match(/([\d\,]+)/gi)[0].split(","),(parseInt(a[0])<<16)+(parseInt(a[1])<<8)+parseInt(a[2]);if(a.match(/^\#/))return parseInt(a.substr(1),16);return 0};(function(){$('link[type="text/css"]').each(function(){var b=($(this).attr("href")||"").match(/\/?css\/([\w\-]+\.css)\?(\d+)/);b&&b[1]&&b[2]&&(a[b[1]]=b[2])})})();(function(){$("body").append('<div class="version" style="display:none; width:1px; height:1px;"></div>');
+for(var c=$(".version"),d=0;d<Muse.assets.required.length;){var f=Muse.assets.required[d],g=f.match(/([\w\-\.]+)\.(\w+)$/),k=g&&g[1]?g[1]:null,g=g&&g[2]?g[2]:null;switch(g.toLowerCase()){case "css":k=k.replace(/\W/gi,"_").replace(/^([^a-z])/gi,"_$1");c.addClass(k);var g=b(c.css("color")),h=b(c.css("background-color"));g!=0||h!=0?(Muse.assets.required.splice(d,1),"undefined"!=typeof a[f]&&(g!=a[f]>>>24||h!=(a[f]&16777215))&&Muse.assets.outOfDate.push(f)):d++;c.removeClass(k);break;case "js":k.match(/^jquery-[\d\.]+/gi)&&
+typeof $!="undefined"?Muse.assets.required.splice(d,1):d++;break;default:throw Error("Unsupported file type: "+g);}}c.remove();if(Muse.assets.outOfDate.length||Muse.assets.required.length)c="Some files on the server may be missing or incorrect. Clear browser cache and try again. If the problem persists please contact website author.",(d=location&&location.search&&location.search.match&&location.search.match(/muse_debug/gi))&&Muse.assets.outOfDate.length&&(c+="\nOut of date: "+Muse.assets.outOfDate.join(",")),d&&Muse.assets.required.length&&(c+="\nMissing: "+Muse.assets.required.join(",")),alert(c)})()})();
+/* body */
+Muse.Utils.transformMarkupToFixBrowserProblemsPreInit();/* body */
+Muse.Utils.prepHyperlinks(true);/* body */
+$('#u534').registerOpacityScrollEffect([{"fade":386,"in":[-Infinity,445.15],"opacity":0},{"in":[445.15,445.15],"opacity":20},{"fade":50,"in":[445.15,Infinity],"opacity":100}]);/* scroll effect */
+$('#u524').registerOpacityScrollEffect([{"fade":150,"in":[-Infinity,485.15],"opacity":0},{"in":[485.15,485.15],"opacity":20},{"fade":50,"in":[485.15,Infinity],"opacity":100}]);/* scroll effect */
+$('#u508').registerOpacityScrollEffect([{"fade":500,"in":[-Infinity,607.45],"opacity":0},{"in":[607.45,607.45],"opacity":20},{"fade":377.65,"in":[607.45,Infinity],"opacity":100}]);/* scroll effect */
+$('#u514').registerOpacityScrollEffect([{"fade":490,"in":[-Infinity,642.15],"opacity":0},{"in":[642.15,642.15],"opacity":20},{"fade":350,"in":[642.15,Infinity],"opacity":100}]);/* scroll effect */
+$('#u529').registerOpacityScrollEffect([{"fade":500,"in":[-Infinity,634.6],"opacity":0},{"in":[634.6,634.6],"opacity":20},{"fade":300,"in":[634.6,Infinity],"opacity":100}]);/* scroll effect */
+Muse.Utils.resizeHeight()/* resize height */
+$('#u519').registerOpacityScrollEffect([{"fade":320,"in":[-Infinity,381.7],"opacity":0},{"in":[381.7,381.7],"opacity":20},{"fade":200,"in":[381.7,Infinity],"opacity":100}]);/* scroll effect */
+$('#u539').registerOpacityScrollEffect([{"fade":386,"in":[-Infinity,402.65],"opacity":0},{"in":[402.65,402.65],"opacity":20},{"fade":50,"in":[402.65,Infinity],"opacity":100}]);/* scroll effect */
+$('#u544').registerOpacityScrollEffect([{"fade":520,"in":[-Infinity,631.2],"opacity":0},{"in":[631.2,631.2],"opacity":10},{"fade":0,"in":[631.2,Infinity],"opacity":100}]);/* scroll effect */
+Muse.Utils.fullPage('#page');/* 100% height page */
+Muse.Utils.showWidgetsWhenReady();/* body */
+Muse.Utils.transformMarkupToFixBrowserProblems();/* body */
+} catch(e) { if (e && 'function' == typeof e.notify) e.notify(); else Muse.Assert.fail('Error calling selector function:' + e); }});
+</script>
+
+   </body>
+</html>
