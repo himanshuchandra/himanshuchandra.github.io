@@ -460,6 +460,7 @@ function shcont(evt)
 	
 	var mouseDown = false,
     pageX = 0;
+	pageY = 0;
 
     function onMouseMove(evt)
     {
@@ -643,16 +644,16 @@ function shcont(evt)
 			}
 		}
 
-    function onMouseDown(evt)
+    function onMouseDown(event)
     {
-        evt.preventDefault();
+        event.preventDefault();
         
         mouseDown = true;
-		pageY = evt.pageY;
-        pageX = evt.pageX;
+		pageY = event.pageY;
+        pageX = event.pageX;
 		
-		var x = event.x;
-		var y = event.y;
+		// var x = event.x;
+		// var y = event.y;
 				mouse.x = ( event.clientX / renderer.domElement.clientWidth ) * 2 - 1;
 				mouse.y = - ( event.clientY / renderer.domElement.clientHeight ) * 2 + 1;
 
