@@ -1,0 +1,1380 @@
+/* ==========================================================================
+	Global Settings
+========================================================================== */
+
+
+/*
+* Boxsizing set to border box http://css-tricks.com/box-sizing/
+*/
+
+*,
+*:before,
+*:after {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+
+/*
+* Remove text-shadow in selection highlight: h5bp.com/i
+* These selection rule sets have to be separate.
+* Customize the background color to match your design.
+*/
+
+::-moz-selection {
+    background: #b3d4fc;
+    text-shadow: none;
+}
+
+::selection {
+    background: #b3d4fc;
+    text-shadow: none;
+}
+
+
+/*
+* Body settings, change it as required
+*/
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1em;
+    line-height: 1.4;
+}
+
+
+/*
+* Headings
+*/
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: 'Ubuntu', Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    text-rendering: optimizeLegibility;
+    margin-top: 0px;
+}
+
+
+/*
+* Paragraphs
+*/
+
+p {
+    font-weight: normal;
+    margin-top: 0px;
+}
+
+
+/*
+* Links
+*/
+
+a {
+    color: #2ba6cb;
+    text-decoration: none;
+    line-height: inherit;
+}
+
+a:hover {
+    /*color: #2795b6;*/
+}
+
+a:focus {
+    color: #2ba6cb;
+    outline: none;
+}
+
+p a,
+p a:visited {
+    line-height: inherit;
+}
+
+
+/*
+* A better looking default horizontal rule
+*/
+
+hr {
+    display: block;
+    height: 1px;
+    border: 0;
+    border-top: 1px solid #ccc;
+    margin: 1em 0;
+    padding: 0;
+}
+
+
+/*
+* Remove the gap between images and the bottom of their containers: h5bp.com/i/440
+*/
+
+img {
+    vertical-align: middle;
+    max-width: 100%;
+    height: auto;
+    -ms-interpolation-mode: bicubic;
+}
+
+
+/*
+* Remove default fieldset styles.
+*/
+
+fieldset {
+    border: 0;
+    margin: 0;
+    padding: 0;
+}
+
+
+/*
+* Allow only vertical resizing of textareas.
+*/
+
+textarea {
+    resize: vertical;
+}
+
+
+/* ==========================================================================
+	Helper classes
+========================================================================== */
+
+
+/*
+* Floats
+*/
+
+.left {
+    float: left;
+}
+
+.right {
+    float: right;
+}
+
+
+/*
+* Text Alignment
+*/
+
+.text-left {
+    text-align: left;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.text-center {
+    text-align: center;
+}
+
+
+/*
+* Image Alignment
+*/
+
+img.alignleft {
+    float: left;
+    margin: 0 10px 10px 0;
+    display: inline;
+}
+
+img.alignright {
+    float: right;
+    margin: 0 0px 10px 10px;
+    display: inline;
+}
+
+img.aligncenter {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 10px;
+}
+
+
+/*
+* Image replacement
+*/
+
+.ir {
+    background-color: transparent;
+    border: 0;
+    overflow: hidden;
+    /* IE 6/7 fallback */
+    *text-indent: -9999px;
+}
+
+.ir:before {
+    content: "";
+    display: block;
+    width: 0;
+    height: 150%;
+}
+
+
+/*
+* Hide from both screenreaders and browsers: h5bp.com/u
+*/
+
+.hidden {
+    display: none !important;
+    visibility: hidden;
+}
+
+
+/*
+* Hide only visually, but have it available for screenreaders: h5bp.com/v
+*/
+
+.visuallyhidden {
+    border: 0;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+}
+
+
+/*
+* Extends the .visuallyhidden class to allow the element to be focusable
+* when navigated to via the keyboard: h5bp.com/p
+*/
+
+.visuallyhidden.focusable:active,
+.visuallyhidden.focusable:focus {
+    clip: auto;
+    height: auto;
+    margin: 0;
+    overflow: visible;
+    position: static;
+    width: auto;
+}
+
+
+/*
+* Hide visually and from screenreaders, but maintain layout
+*/
+
+.invisible {
+    visibility: hidden;
+}
+
+
+/*
+* Clearfix: contain floats
+*/
+
+
+/*
+* More semantic version as described in http://css-tricks.com/snippets/css/clear-fix/
+*/
+
+.group:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+
+/*
+* overflow method for clearing floats
+*/
+
+.floatbox {
+    overflow: hidden;
+}
+
+
+/*
+* older method of adding empty tags for clearing
+*/
+
+.clear {
+    clear: both;
+    height: 1px;
+    line-height: 1px;
+}
+
+
+/*
+* Chromeframe
+*/
+
+.chromeframe {
+    margin: 0.2em 0;
+    background: #ccc;
+    color: #000;
+    padding: 0.2em 0;
+}
+
+
+/*
+* Other
+*/
+
+
+/* ==========================================================================
+	Layout
+========================================================================== */
+
+
+/* Container ---------------------- */
+
+#container {}
+
+
+/* Header ---------------------- */
+
+#header {
+    padding: 12px 0px;
+    position: fixed;
+    width: 100%;
+    background: #fff;
+    top: 0px;
+    z-index: 100;
+}
+
+#header .inner-header {
+    display: none;
+    position: relative;
+}
+
+body.header_active #header .inner-header {
+    display: block;
+}
+
+#header .container {
+    width: 1230px;
+}
+
+#header ul {
+    margin: 0px;
+    padding: 0px;
+    list-style: none;
+    `
+}
+
+#header ul li {
+    display: inline-block;
+    text-transform: uppercase;
+    font-size: 20px;
+    letter-spacing: 1px;
+}
+
+#header .logo img {
+    width: 100%;
+}
+
+#header .emp_section {
+    position: fixed;
+    right: 40px;
+    top: 20px;
+    width: 100%;
+    text-align: end;
+    z-index: -1000;
+    background-color: white;
+}
+
+#header .emp_section li {
+    font-size: 12px;
+    margin: 0px 8px;
+}
+
+#header .emp_section li a {
+    color: #231f20;
+    text-decoration: none;
+}
+
+#header .emp_section li:last-child a {
+    color: #c4942f;
+}
+
+#header .emp_section li a:hover {
+    color: #c4942f;
+}
+
+#header .emp_section li:last-child {
+    line-height: 24px;
+    height: 26px;
+    padding: 0 7px;
+    letter-spacing: 0px;
+    background-color: transparent;
+    border: 1px solid #c4942f;
+    color: #c4942f;
+}
+
+#header .emp_section li:last-child:hover {
+    background-color: #c4942f;
+    color: #fff;
+}
+
+#header .emp_section li:last-child:hover a {
+    color: #fff;
+}
+
+
+/* Icon 3 */
+
+#header .mobileHeader {
+    display: none;
+}
+
+#header .mobileLogo {
+    width: 200px;
+}
+
+#header .mobileLogo img {
+    width: 100%;
+}
+
+@media(max-width:992px) {
+    #header .container {
+        width: 100%;
+    }
+}
+
+
+/* Extra small devices (phones, up to 480px) */
+
+@media (max-width: 992px) {
+    .container {
+        width: 100%;
+    }
+    #header .mobileHeader {
+        display: block;
+    }
+    body.header_active #header .inner-header {
+        display: none;
+    }
+    #header .inner-header {
+        display: none;
+    }
+    #header .emp_section {
+        display: none;
+    }
+}
+
+@media(max-width:1200px) {
+    #header .emp_section {
+        right: 15px;
+    }
+}
+
+@media(max-width:992px) {
+    #header .inner-header {
+        display: none;
+    }
+    #header .emp_section {
+        display: none;
+    }
+}
+
+.menu-btn {
+    display: block;
+    padding: 0px;
+    border: 0;
+    position: absolute;
+    right: 30px;
+    top: 8px;
+    z-index: 30000000;
+    background: none;
+    cursor: pointer;
+    border: 1px solid transparent;
+}
+
+.menu-btn span.line {
+    display: block;
+    height: 3px;
+    width: 35px;
+    position: relative;
+    margin: 7px 0;
+    background: brown;
+    cursor: pointer;
+    transition: all .5s cubic-bezier(0.19, 1, 0.22, 1) 0s;
+    -webkit-transition: all .3s cubic-bezier(0.19, 1, 0.22, 1) 0s;
+    -moz-transition: all .3s cubic-bezier(0.19, 1, 0.22, 1) 0s;
+    -o-transition: all .3s cubic-bezier(0.19, 1, 0.22, 1) 0s;
+    -ms-transition: all .3s cubic-bezier(0.19, 1, 0.22, 1) 0s;
+}
+
+@media (min-width:992px) {
+    .menu-btn {
+        display: none !important;
+    }
+}
+
+@media(max-width:992px) {
+    #header .mobileMenu ul li {
+        font-size: 15px;
+    }
+}
+
+@media (max-width:992px) {
+    .menu-btn {
+        display: block;
+    }
+    #header .mobileMenu ul {
+        display: none;
+        width: 100%;
+        background: rgba(0, 0, 0, 0.6);
+        text-align: center;
+        position: absolute;
+        right: 0px;
+        top: -89px;
+        z-index: 1000000;
+        padding: 120px 0px 50px;
+        min-height: 800px;
+    }
+    #header .mobileMenu ul li {
+        display: block;
+        margin: 35px 0px 20px 0px;
+        float: none;
+    }
+    #header .mobileMenu ul li a {
+        color: #fff;
+        text-decoration: none;
+    }
+    .menu-btn.open span:first-child {
+        left: 0;
+        top: 10px;
+        transform: rotate(45deg);
+    }
+    .menu-btn.open span:last-child {
+        left: 0;
+        bottom: 20px;
+        transform: rotate(-45deg);
+    }
+    .menu-btn span:first-child,
+    .menu-btn span:last-child {
+        transition: transform 1s cubic-bezier(0.19, 1, 0.22, 1) 0s;
+    }
+    .menu-btn.open span:nth-child(2),
+    .menu-btn.open span:nth-child(3) {
+        opacity: 0;
+    }
+}
+
+
+/* Banner ---------------------- */
+
+#banner {}
+
+
+/* Main Navigation ---------------------- */
+
+#main-navigation {}
+
+#main-navigation {
+    padding: 10px 0px 0px;
+}
+
+#main-navigation ul {
+    margin-left: 20px;
+}
+
+#main-navigation ul li {
+    font-size: 13px;
+    line-height: 24px;
+    font-weight: 500;
+    padding-bottom: 10px;
+    position: relative;
+    margin: 0px 10px;
+}
+
+#main-navigation ul li a {
+    text-decoration: none;
+    color: #000;
+}
+
+#main-navigation ul li:before {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background-color: #CF5300;
+    -webkit-transform: scale3d(0, 1, 1);
+    transform: scale3d(0, 1, 1);
+    -webkit-transition: -webkit-transform 0.1s;
+    transition: transform 0.1s;
+}
+
+#main-navigation ul li:hover:before {
+    -webkit-transform: scale3d(1, 1, 1);
+    transform: scale3d(1, 1, 1);
+    -webkit-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    -webkit-transition-duration: 0.3s;
+    transition-duration: 0.3s;
+}
+
+@media(max-width:1200px) {
+    #main-navigation ul li {
+        margin: 0px 1px;
+        font-size: 12px;
+    }
+    #main-navigation ul {
+        margin-left: 0px;
+    }
+}
+
+
+/* Banner ---------------------- */
+
+#banner {}
+
+
+/* Main Navigation ---------------------- */
+
+#main-navigation {}
+
+
+/* Content ---------------------- */
+
+#content {
+    margin-top: 80px;
+    margin-bottom: 50px;
+}
+
+#content .profile_pic {
+    height: 100px;
+    width: 100px;
+    border: 1px solid;
+}
+
+#content .fa {
+    font-size: 18px;
+    margin-top: 0px;
+}
+
+#content .profile {
+    display: inline-block;
+    text-align: right;
+}
+
+#content .profile ul {
+    list-style: none;
+}
+
+#content .profile ul li {
+    display: inline-block;
+    margin: 2px;
+}
+
+#content .profile ul li:first-child {
+    vertical-align: top;
+    margin-top: 13px;
+}
+
+#content .profile img {
+    width: 80px;
+    height: 80px;
+}
+
+#content .profile_content .search_icon .fa {
+    font-size: 30px;
+}
+
+#content .profile_content .search_icon {
+    position: absolute;
+    top: 25%;
+    left: 3%;
+}
+
+#content .profile_content {
+    position: relative;
+}
+
+#content .search_location {
+    margin-top: 10px;
+    margin-bottom: 20px;
+    height: 50px;
+    font-size: 20px;
+    padding-left: 6%;
+    width: 25%;
+}
+
+#content .search {
+    margin-top: 10px;
+    margin-bottom: 20px;
+    height: 50px;
+    font-size: 20px;
+    padding-left: 6%;
+    width: 25%;
+}
+
+#content .profile_content select {
+    width: 24%;
+    height: 50px;
+    font-size: 20px;
+    font-style: none;
+    font-weight: lighter;
+    color: gray;
+    text-align: center;
+}
+
+
+/*
+#content .profile_content .exp_dd input {
+    margin-top: 10px;
+    margin-bottom: 20px;
+    height: 50px;
+    font-size: 20px;
+    width: 25%;
+    padding-left: 6%;
+}
+
+#content .profile_content .exp_dd {
+    position: relative;
+    display: inline;
+}
+
+#content .profile_content .exp_dd .dd_icon {
+    position: absolute;
+    top: 1%;
+    right: 4%;
+}
+
+#content .profile_content .exp_dd .dd_icon .fa {
+    font-size: 30px;
+}
+
+#content .profile_content .exp_dd .exp_ddlist {
+    position: absolute;
+    width: 98%;
+    z-index: 2;
+    top: 30px;
+    left: 0%;
+    box-shadow: 2px 2px 4px gray;
+    display: none;
+}
+
+#content .profile_content .exp_dd .exp_ddlist li {
+    list-style: none;
+    padding: 4px;
+}
+
+#content .profile_content .exp_dd .exp_ddlist ul {
+    margin: 0px;
+    padding: 0px;
+    text-align: center;
+    height: 300px;
+    background-color: white;
+    overflow: scroll;
+}
+
+#content .profile_content .exp_dd .exp_ddlist li:nth-child(even) {
+    background-color: #ECF5E1;
+}*/
+
+
+/*hover on experience dropdown*/
+
+
+/*
+#content .profile_content .exp_dd:hover .exp_ddlist {
+    display: block;
+}
+
+#content .profile_content .salary_dd input {
+    margin-top: 10px;
+    margin-bottom: 20px;
+    height: 50px;
+    font-size: 20px;
+    width: 23%;
+    padding-left: 6%;
+}
+
+#content .profile_content .salary_dd {
+    position: relative;
+    display: inline;
+}
+
+#content .profile_content .salary_dd .salary_icon {
+    position: absolute;
+    top: 1%;
+    right: 4%;
+}
+
+
+
+#content .profile_content .salary_dd .salary_ddlist {
+    position: absolute;
+    width: 100%;
+    z-index: 2;
+    top: 30px;
+    left: 0%;
+    height: 100px;
+    box-shadow: 2px 2px 4px gray;
+    display: none;
+}
+
+#content .profile_content .salary_dd .salary_ddlist li {
+    list-style: none;
+    padding: 4px;
+}
+
+#content .profile_content .salary_dd .salary_ddlist ul {
+    margin: 0px;
+    padding: 0px;
+    text-align: center;
+    height: 300px;
+    background-color: white;
+    overflow: scroll;
+}
+
+#content .profile_content .salary_dd .salary_ddlist li:nth-child(even) {
+    background-color: #ECF5E1;
+}
+*/
+
+
+/*hover on experience dropdown*/
+
+
+/*
+#content .profile_content .salary_dd:hover .salary_ddlist {
+    display: block;
+}
+*/
+
+#content .jobinfo {
+    text-align: left;
+}
+
+#content .jobinfo button {
+    width: 100%;
+    height: 35px;
+}
+
+#content .newsbtn {
+    margin: 10px auto;
+    display: block;
+    padding: 15px 15px;
+    background-color: #EFD8A8;
+    color: brown;
+    text-transform: uppercase;
+    text-decoration: none;
+    width: 100%;
+    text-align: center;
+    border: 1px solid lightgray;
+}
+
+#content .subscribe .savejobbtn {
+    width: 100%;
+    margin: 0px auto;
+    display: block;
+    padding: 15px 15px;
+    background-color: #EFD8A8;
+    color: brown;
+    text-transform: uppercase;
+    text-decoration: none;
+    width: 100%;
+    text-align: center;
+    border: 1px solid lightgray;
+}
+
+#content .subscribe .recommend_job {
+    border: 1px solid gray;
+    margin-top: 10px;
+}
+
+#content .subscribe .recommend_job table th {
+    font-size: 18px;
+    padding: 8px;
+    color: gray;
+    text-align: center;
+    text-transform: uppercase;
+    background-color: #EDB458;
+}
+
+#content .subscribe .recommend_job table td {
+    padding: 8px;
+    text-align: justify;
+}
+
+#content .subscribe .recommend_job .recommendjob_detail {
+    display: block;
+    padding: 4px;
+    color: gray;
+    text-align: justify;
+}
+
+#content .subscribe .recommend_job table tr:nth-child(even) {
+    background-color: #ECF5E1;
+}
+
+#content .subscribe .recommend_job table tr:nth-child(odd) {
+    background-color: white;
+}
+
+#content .subscribe .jobblog {
+    width: 100%;
+    height: 200px;
+    margin-top: 10px;
+    border: 1px solid gray;
+    overflow-y: scroll;
+}
+
+#content .subscribe .jobblog p {
+    text-align: justify;
+}
+
+#content .jobs .filter {
+    width: 100%;
+    text-align: right;
+    height: 50px;
+    background-color: rgb(244, 244, 244);
+}
+
+#content .jobs .filter .sort {
+    padding-top: 12px;
+}
+
+#content .jobs .filter select {
+    border: none;
+    background-color: rgb(244, 244, 244);
+}
+
+#content .jobs .job_result {
+    margin-top: 10px;
+}
+
+#content .job_data ul {
+    border: 1px solid;
+}
+
+#content .job_data ul li {
+    list-style: none;
+    display: inline-block;
+}
+
+#content .jobs .job_result span {
+    color: gray;
+    display: inline-block;
+    margin: 7px 0px;
+}
+
+#content .jobs .job_res {
+    margin-top: 10px;
+}
+
+#content .left {
+    float: left;
+}
+
+#content .right {
+    float: right;
+}
+
+.clearfix:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+#content .jobs .job_res ul {
+    margin: 0px;
+    padding: 0px;
+}
+
+#content .jobs .job_res ul li {
+    list-style: none;
+    background-color: rgb(244, 244, 244);
+    margin-bottom: 14px;
+}
+
+#content .jobs .job_res ul li a {}
+
+#content .jobs .job_res ul li span {
+    display: inline-block;
+    color: gray;
+    padding: 5px 0px;
+}
+
+#content .jobs .job_res Experience_location .fa {
+    color: gray;
+}
+
+#content .jobs .job_res .jobinfo .Experience_location .exp {
+    padding: 10px;
+}
+
+#content .jobs .job_res .jobinfo .Experience_location .location {
+    padding: 10px;
+}
+
+#content .jobs .job_res .jobinfo {
+    width: 70%;
+    margin: 10px 10px;
+}
+
+#content .jobs .job_res .companyimg img {
+    padding: 14px 12px 0px 0px;
+}
+
+#content .jobs .job_res .companyimg .apply {
+    display: block;
+    margin: 20% 0% 0% 10%;
+    background-color: #3b5998;
+    color: white;
+    width: 80%;
+    padding: 5px;
+    border: none;
+    box-shadow: 2px 2px 3px gray;
+}
+
+#content .jobs .job_res .matadata {
+    background-color: rgb(230, 240, 240);
+}
+
+#content .jobs .job_res .matadata .save .fa {
+    padding: 5px 15px;
+}
+
+#content .jobs .job_res .matadata .poster span {
+    text-align: right;
+}
+
+#content .prof .profile_update {
+    margin: 10px auto;
+    height: 200px;
+    width: 200px;
+    border: 20px solid red;
+    border-radius: 50%;
+    border-top-color: green;
+    border-right-color: green;
+    border-bottom-color: green;
+    position: relative;
+}
+
+#content .prof .profile_update .profile_percent {
+    font-size: 50px;
+    position: absolute;
+    top: 30%;
+    left: 24%;
+}
+
+#content .prof {
+    text-align: center;
+}
+
+#content .prof .profile_txt {
+    font-size: 40px;
+}
+
+#content .prof .complete {
+    font-size: 40px;
+}
+
+#carousel-example-generic {
+    background-color: rgb(220, 244, 244);
+    min-height: 200px;
+    margin: 10px 0px;
+}
+
+#carousel-example-generic .carousel-indicators .active {
+    background-color: #D9BA6C;
+}
+
+#carousel-example-generic .carousel-inner .item p {
+    margin: 4px auto;
+    color: darkslategray;
+    width: 90%;
+    text-align: justify;
+}
+
+#carousel-example-generic .carousel-indicators li {
+    border-color: #D9BA6C;
+}
+
+#carousel-example-generic .carousel-control {
+    color: #D9BA6C;
+}
+
+
+/*
+#content-block-sides .row .sideimages img {
+    min-height: 370px;
+}
+
+#content-block-sides .row .lengthy {
+    margin-bottom: 100px;
+}
+
+#content-block-sides .row .carousel-indicators {
+    top: 4px;
+    left: 10px;
+    position: relative;
+}
+
+#content-block-sides .row .carousel-indicators li {
+    color: orange;
+}
+
+#content-block-sides .row .carousel-caption p {
+    color: black;
+}*/
+
+
+/*
+#content .jobs .job_list .job_data {
+    background-color: rgb(244, 244, 244);
+}
+
+#content .jobs .job_list .job_data .job_img {
+    display: flex;
+    flex-wrap: wrap;
+}*/
+
+
+/* Main ---------------------- */
+
+#main {}
+
+
+/* Sidebar ---------------------- */
+
+#sidebar {}
+
+
+/* Footer ---------------------- */
+
+#footer {
+    background-color: gray/*#F7F6F5*/
+    ;
+    margin-top: 60px;
+}
+
+#footer .footer-logo {
+    text-align: center;
+    margin: 30px auto;
+}
+
+#footer .row h5 {
+    margin: 0px auto;
+    font-size: 25px;
+}
+
+#footer .row .foot-head .menu {
+    margin-left: 0px;
+}
+
+#footer .row .foot-head .menu ul {
+    margin: 0px -35px;
+}
+
+#footer .row .foot-head .menu ul li {
+    list-style: none;
+    padding: 4px 4px;
+    width: 150px;
+}
+
+#footer .row .foot-head .menu ul li a {
+    text-decoration: none;
+    color: black;
+}
+
+#footer .row .foot-head-social ul {
+    margin: 0px auto;
+}
+
+#footer .row .foot-head-social ul li {
+    display: inline-block;
+    list-style: none;
+    width: 20%;
+    font-size: 30px;
+}
+
+#footer .row .foot-head-social ul li i {
+    color: white;
+}
+
+#footer .row .foot-head-social ul li a {
+    color: black;
+}
+
+
+/* ==========================================================================
+	Common Functionalities & UI Elements
+========================================================================== */
+
+
+/*
+* Post
+*/
+
+.post dl,
+.post dt,
+.post dd,
+.post ul,
+.post ol,
+.post li,
+.post h1,
+.post h2,
+.post h3,
+.post h4,
+.post h5,
+.post h6,
+.post pre,
+.post p,
+.post blockquote,
+.post th,
+.post td {
+    margin: 0;
+    padding: 0;
+    font-size: 14px;
+    direction: ltr;
+}
+
+.post p {
+    font-family: inherit;
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 17px;
+}
+
+.post p.lead {
+    font-size: 17.5px;
+    line-height: 1.6;
+    margin-bottom: 17px;
+}
+
+.post h1,
+.post h2,
+.post h3,
+.post h4,
+.post h5,
+.post h6 {
+    font-weight: bold;
+    font-style: normal;
+    color: #222222;
+    text-rendering: optimizeLegibility;
+    line-height: 1.1;
+    margin-bottom: 14px;
+    margin-top: 14px;
+}
+
+.post h1 small,
+.post h2 small,
+.post h3 small,
+.post h4 small,
+.post h5 small,
+.post h6 small {
+    font-size: 60%;
+    color: #6f6f6f;
+    line-height: 0;
+}
+
+.post h1 {
+    font-size: 44px;
+}
+
+.post h2 {
+    font-size: 37px;
+}
+
+.post h3 {
+    font-size: 27px;
+}
+
+.post h4 {
+    font-size: 23px;
+}
+
+.post h5 {
+    font-size: 17px;
+}
+
+.post h6 {
+    font-size: 14px;
+}
+
+.post code {
+    font-weight: bold;
+    background: #ffff99;
+}
+
+
+/* Post - Lists ---------------------- */
+
+.post ul,
+.post ol,
+.post dl {
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 17px;
+    list-style-position: outside;
+}
+
+.post ul li ul,
+.post ul li ol {
+    margin-left: 20px;
+    margin-bottom: 0;
+}
+
+.post ol {
+    margin-left: 20px;
+}
+
+.post ol li ul,
+.post ol li ol {
+    margin-left: 20px;
+    margin-bottom: 0;
+}
+
+
+/* Post - Blockquotes ---------------------- */
+
+.post blockquote,
+.post blockquote p {
+    line-height: 1.5;
+    color: #6f6f6f;
+}
+
+.post blockquote {
+    margin: 0 0 17px;
+    padding: 9px 20px 0 19px;
+    border-left: 1px solid #ddd;
+}
+
+.post blockquote cite {
+    display: block;
+    font-size: 13px;
+    color: #555555;
+}
+
+.post blockquote cite:before {
+    content: "\2014 \0020";
+}
+
+.post blockquote cite a,
+.post blockquote cite a:visited {
+    color: #555555;
+}
+
+
+/* ------------------------------------- 
+ 	Cross Browser CSS
+	Documentation: http://rafael.adm.br/css_browser_selector/
+------------------------------------- */
+
+
+/*Use to make CSS 3 Rounded Corners , Text Shadows and Box Shadows for IE */
+
+
+/* .ie .css3 { behavior: url("assets/javascripts/vendor/PIE.htc"); position:relative; } */
