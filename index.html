@@ -1,328 +1,90 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-<head>
-<!-- Meta Tags -->
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width">
-<meta name="description" content="">
+  <head>
+    <meta charset="utf-8">
+    <title>Himanshu Chandra</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    <!-- build:css(.) styles/vendor.css -->
+    <!-- bower:css -->
+    <link rel="stylesheet" href="index_files/bower_components/bootstrap/dist/css/bootstrap.css" />
+    <!-- endbower -->
+    <!-- endbuild -->
+    <!-- build:css(.tmp) styles/main.css -->
+    <!--<link rel="stylesheet" href="styles/main.css">-->
+    <link rel="stylesheet" href="index_files/styles/styles.css">
+    <!-- endbuild -->
+  </head>
+  <body ng-app="resumeApp">
+    <!--[if lte IE 8]>
+      <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->
 
-<!-- Page Title & Favicon -->
-<title>Index | Reboot</title>
+  <div><img src="index_files/images/nameFull.png" class="img-responsive name"></div>
 
-<!-- Stylesheets -->
-<link rel="stylesheet" href="assets/stylesheets/normalize.css">
-<link rel="stylesheet" href="main.css">
-<link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
-<link rel="stylesheet" href="assets/stylesheets/font-awesome.css">
-
- 
-
-
-
-<!-- Javascript -->
-<script src="assets/javascripts/vendor/head.core.min.js" type="text/javascript" charset="utf-8"></script>
-</head>
-<body>
-<!--[if lt IE 7]>
-	<p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
-	<![endif]-->
-    
-<div id="container">
-
-    <header id="header">
-        <div class="container">
-           <div class="mobileHeader">
-            <div class="mobileLogo">
-                   <img src="assets/images/apres-logo_small.png">
-            </div>
-             <button id="nav-icon3" class="menu-btn">
-                  <span class="line"></span>
-                  <span class="line"></span>
-                   <span class="line"></span>
-                   <span class="line"></span>
-               </button>
-                   <div class="mobileMenu">
-                       <ul>
-                           <li><a href="Mentoring.html">Mentoring</a></li>
-                           <li><a href="CapacityBuilding.html">Capacity Building</a></li>
-                           <li><a href="Events.html">Corporate Workshops</a></li>
-                           <li><a href="Events.html">Advocacy</a></li>
-                           <li><a href="Events.html">Events</a></li>
-                           <li><a href="Events.html">Jobs</a></li>
-                       </ul>
-                   </div>
-            </div>
-            <div class="inner-header">
-                <div class="row">
-                   <div class="col-sm-2">
-                   <div class="logo">
-                   <img src="assets/images/apres-logo_small.png">
-                       </div>
-                       
-                       </div>
-                    <div class="col-sm-9">
-                        <nav id="main-navigation">
-                            <ul>
-                                <li><a href="Mentoring.html">Mentoring</a></li>
-                                <li><a href="CapacityBuilding.html">Capacity Building</a></li>
-                                <li><a href="Events.html">Corporate Workshops</a></li>
-                                <li><a href="Events.html">Advocacy</a></li>
-                                <li><a href="Events.html">Events</a></li>
-                                <li><a href="Events.html">Jobs</a></li>
-                            </ul>
-                        </nav>
-                        </div>
-                       
-                    </div>
-                </div>
-            
-
-            <div class="emp_section">
-                <ul>
-                    <!--<li><a href="#">For Employers</a></li>-->
-                    <li><a href="#">Sign In</a></li>
-                    <li><a href="#">Sign Up</a></li>
-                </ul>
-            </div>
-
-            
+  <div class="parallax">
+      <!--<img src="images/basenew.png" class="base">-->
+        <div>
+            <ul id="scene" class="scene">
+                <li class="layer" data-depth="0.00"><img src="index_files/images/base.png" class="l1Base"></li>
+                <li class="layer" data-depth="0.20"><img src="index_files/images/inkPatch.png" class="img-responsive" class="l2Inkpatch"></li>
+                <li class="layer" data-depth="0.30"><img src="index_files/images/uiuxNew.png" class="img-responsive" class="name"></li>
+                <!--<li class="layer" data-depth="0.30"><img src="index_files/images/layer3circle.png" class="img-responsive" class="l3Circle"></li>-->
+                <!--<li class="layer" data-depth="0.30"><img src="index_files/images/centreText.png" class="img-responsive" class="l3Circle"></li>-->
+                <li class="layer" data-depth="0.40"><img src="index_files/images/inkadd.png" class="img-responsive" class="l4Ink1"></li>
+                <li class="layer" data-depth="0.40"><img src="index_files/images/layer4richinksrgbweb.png" class="img-responsive" class="l4Ink1"></li>
+                <li class="layer" data-depth="0.50"><img src="index_files/images/layer5richinksrgbweb.png" class="img-responsive" class="l5Ink2"></li>
+            </ul>
         </div>
-        
-        
+   </div>
 
-        
-    </header>
-    <div id="content">
-       <div class="socialcolumn">
-           <ul>
-    <li class="fb"><a href="#"><i class="fa fa-facebook" aria-hidden="true"></i></a></li>
-    <li class="tw"><a href="#"><i class="fa fa-twitter" aria-hidden="true"></i></a></li>
-    <li class="yt"><a href="#"><i class="fa fa-youtube" aria-hidden="true"></i></a></li>
-    <li class="link"><a href="#"><i class="fa fa-linkedin" aria-hidden="true"></i></a></li>
-    <li class="ins"><a href="#"><i class="fa fa-instagram" aria-hidden="true"></i></a></li>
-</ul>
-       </div>
-        <div class="HomePage">
-           <div class="container">
-            <section id="intro">
-                <div class="row">
-              <div class="col-sm-12">
-                  <div id="second-logo"><img src="assets/images/apres-logo.png" alt="sub-logo" class="sub-logo"></div>
-                  <div class="sub-main-nav">
-                      <ul>
-                          <li><a href="Mentoring.html">Mentoring</a></li>
-                          <li><a href="CapacityBuilding.html">Capacity Building</a></li>
-                          <li><a href="Events.html">Events</a></li>
-                          <li><a href="Events.html">Jobs</a></li>
-                      </ul>
-                  </div>
-                  <p>Looking for a job you’ll love? Reboot is redefining how women return to or transition within the workforce by offering inspiring content, tools to successfully navigate your transition, a roster of the very best career coaches and a diverse job market where you’ll find full-time, part-time and project-based positions.</p>
-                  <h5>Reconnect with your professional self</h5>
-                  <a href="#" class="start-button"><span class="button-text">GET STARTED</span></a>
-                  
-              </div>
-              
-              
-              </div>
-            </section>
-            <section id="content-block-sides">
-               <div class="row">
-                   <div class="gray-block col-sm-6">
-                       <div class="side-block-left">
-                           <h4>MENTORING</h4>
-                          <p> Want to check out available opportunities? Click here to search our employers and our curated job market where you’ll find everything from full-time, part-time, project-based, flex time and volunteer work.</p>
-                          <a href="Mentoring.html" class="start-button1"><span>Read More</span></a>
-                       </div>
-                   </div>
-                   <div class="col-sm-6">
-                       <div class="side-block-testimonials">
-           <!-- <div id="myCarousel" class="carousel slide" data-ride="carousel">
-               <div class="images">
-                   <img src="Assets/Images/testimonial_photostrip.jpg" alt="testimonial">
-               </div>
-  
-  <ol class="carousel-indicators">
-    <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
-    <li data-target="#myCarousel" data-slide-to="1"></li>
-    <li data-target="#myCarousel" data-slide-to="2"></li>
-  </ol>
+   <a href="https://facebook.com/himanshu.chandra.777" class="social fb"><img src="index_files/images/fb.png" class="img-responsive"></a>
+   <a href="https://github.com/himanshuchandra" class="social git"><img src="index_files/images/git.png" class="img-responsive"></a>
+   <a href="https://linkedin.com/in/himanshu-chandra/" class="social in"><img src="index_files/images/in.png" class="img-responsive"></a>
 
-  
-  <div class="carousel-inner">
-    <div class="item active">
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid illo cupiditate, ipsum consequuntur officia voluptate dolores facere. Cum repudiandae vitae recusandae rem rerum magnam, omnis. Nihil impedit, minima iste quod!</p>
-    </div>
+    <!--<div class="container">
+    <div ng-include="'views/main.html'" ng-controller="MainCtrl"></div>
+    </div>-->
 
-    <div class="item">
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste sunt asperiores modi tenetur placeat excepturi, voluptate dolores aspernatur cum temporibus eligendi, tempora officiis sint recusandae maxime. Accusamus a dolorem possimus.</p>
-    </div>
-
-    <div class="item">
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Porro corporis illo possimus dicta vitae, dolores ratione repellat cupiditate dolore odio sequi, veritatis quod nostrum, quisquam fugiat minima, et earum sit.</p>
-    </div>
-  </div>
-</div>   -->
-                      <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
-  <!-- Indicators -->
-  <ol class="carousel-indicators">
-    <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
-    <li data-target="#carousel-example-generic" data-slide-to="1"></li>
-    <li data-target="#carousel-example-generic" data-slide-to="2"></li>
-  </ol>
-
-  <!-- Wrapper for slides -->
-  <div class="carousel-inner" role="listbox">
-   
-    <div class="item active lengthy">
-      <img src="assets/images/testimonial_photostrip.jpg" alt="...">
-      <div class="carousel-caption">
-         </div>
-         
-    </div>
-   
-    <div class="item lengthy">
-      <img src="assets/images/testimonial_photostrip.jpg" alt="...">
-      <div class="carousel-caption">
-        
+    <div class="links">
+      <div class="container">
+        <p><span class="glyphicon glyphicon-heart"></span> Working On this right now ....</p>
+        <p>Checkout my old resume <a href="https://himanshuchandra.github.io/iluzex.html">here</a>.</p>
+        <p>And a great three.js project <a href="https://himanshuchandra.github.io/cube.html">here</a>.</p>
       </div>
     </div>
-     <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi a esse eaque quod porro assumenda, quasi iure repellat nesciunt nihil expedita omnis amet repellendus sapiente, quae. Ducimus aut, esse officiis.</p> 
-  </div>
 
-  <!-- Controls -->
-  <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
-    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
-    <span class="sr-only">Previous</span>
-  </a>
-  <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
-    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-    <span class="sr-only">Next</span>
-  </a>
-</div>
-                       </div>
-                   </div>
-               </div>
-                <div class="row">
-                    <div class="sideimages col-sm-6">
-                        <img src="assets/images/images%20(29).jpg" alt="Inspire">
-                    </div>
-                    <div class="right-block  gray-block col-sm-6">
-                        <div class="side-block-right">
-                            <h4>CAPACITY BUILDING</h4>
-                          <p> Want to check out available opportunities? Click here to search our employers and our curated job market where you’ll find everything from full-time, part-time, project-based, flex time and volunteer work.</p>
-                          <a href="CapacityBuilding.html" class="start-button1"><span>Read More</span></a>
-                       </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="gray-block col-sm-6">
-                        <div class="side-block-left">
-                            <h4>JOBS</h4>
-                          <p> Want to check out available opportunities? Click here to search our employers and our curated job market where you’ll find everything from full-time, part-time, project-based, flex time and volunteer work.</p>
-                          <a href="#" class="start-button1"><span>Read More</span></a>
-                        </div>
-                    </div>
-                    <div class="sideimages right-block col-sm-6">
-                        <img src="assets/images/helloquence-51716.jpg" alt="admire">
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="sideimages col-sm-6">
-                        <img src="assets/images/43390264-Busy-women-working-in-the-office-Stock-Photo.jpg" alt="aquire">
-                    </div>
-                    <div class="right-block gray-block col-sm-6">
-                        <div class="side-block-right">
-                           <h4>EVENTS</h4>
-                          <p> Want to check out available opportunities? Click here to search our employers and our curated job market where you’ll find everything from full-time, part-time, project-based, flex time and volunteer work.</p>
-                          <a href="#" class="start-button1"><span>Read More</span></a>
-                       </div>
-                    </div>
-                </div>
-               
-            </section>
-            <section id="press-row">
-                <div class="row">
-                    <h4>In The Press</h4>
-                    <div class="company-images">
-                        <img src="assets/images/attva-mittal-logo-grayscale.png"><img src="assets/images/aurusinc-logo-grayscale.png"><img src="assets/images/ealthbeing-logo-grayscale.png"><img src="assets/images/nvent-logo-grayscale.png"><img src="assets/images/odrej-agrovet-logo-grayscale.png"><img src="assets/images/ohh-logo-grayscale.png"><img src="assets/images/indlance-logo-grayscale%20(1).png"><img src="assets/images/oneywell-logo-grayscale.png">
-                    </div>
-                </div>
-            </section>
-        </div>
-        </div>
-    </div>
-    <section class="employers">
-       <div class="container">
-       <div class="image">
-           <img  class="image"  src="assets/images/komnata_kabinet_stol_stul_polki_39161_3840x2400.jpg" alt="image">
-       </div>
-       
-        <div class="inner-section">
-           
-           
-            <h4>FOR EMPLOYERS</h4>
-             <div class="column">
-                <p>Interested in posting jobs on Reboot? Get access to an incredible network of active job seekers with established work histories and experiences. Employers on Reboot get a full-page recruiting and marketing platform showcasing the company, corporate culture and social media outlets. Our marketing experts will help create your corporate profile and post job opportunities. Reboot also promotes Employers to our ever-expanding Après community by featuring them in articles, emails and social media outlets.</p>
-                <a href="#" class="learn-more">READ MORE</a>
-                  </div>
-        </div>
-        
-           
-        
-        </div>
-    </section>
-    <footer id="footer">
-        <div class="container">
-            <div class="row">
-                <div class="footer-logo col-sm-4">
-                    <a href="#"><img src="assets/images/apres-logo_small.png"></a>
-                </div>
-                <div class="foot-head  col-sm-2">
-                    <h3>About Reboot</h3>
-                    <div class="menu">
-                        <ul>
-                        <li>About Us</li>
-                        <li>Our Beliefs</li>
-                        <li>Advisory Board</li>
-                        <li>Join Our Team</li>
-                         <li>Press</li>
-                         <li>Contact</li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="foot-head  col-sm-2">
-                    <h3>Get Involved</h3>
-                    <div class="menu">
-                        <ul>
-                            <li>For Employers </li>
-                            <li>For Career Coaches</li>
-                            <li>Send Feedback</li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="foot-head-social  col-sm-4">
-                    <h3>FOLLOW US FOR  INSPIRATION</h3>
-                    <ul>
-                        <li><a href="#"><i class="fa fa-facebook" aria-hidden="true"></i></a></li>
-                        <li><a href="#"><i class="fa fa-twitter" aria-hidden="true"></i></a></li>
-                        <li><a href="#"><i class="fa fa-instagram" aria-hidden="true"></i></a></li>
-                        <li><a href="#"><i class="fa fa-tumblr-square" aria-hidden="true"></i></a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </footer>
 
-</div>
-    
-<!-- Javascript --> 
-<script>window.jQuery || document.write('<script src="assets/javascripts/vendor/jquery-3.1.1.js"><\/script>')</script>
+    <!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->
+     <script>
+       !function(A,n,g,u,l,a,r){A.GoogleAnalyticsObject=l,A[l]=A[l]||function(){
+       (A[l].q=A[l].q||[]).push(arguments)},A[l].l=+new Date,a=n.createElement(g),
+       r=n.getElementsByTagName(g)[0],a.src=u,r.parentNode.insertBefore(a,r)
+       }(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
 
-<!-- Custom JS Code for all pages --> 
-<script src="assets/javascripts/vendor/tether.min.js"></script>
-<script src="assets/bootstrap/js/bootstrap.min.js"></script>
-<script src="assets/javascripts/main.js"></script>
+       ga('create', 'UA-XXXXX-X');
+       ga('send', 'pageview');
+    </script>
 
-<!-- Custom JS Code for this page -->
+    <!-- build:js(.) scripts/vendor.js -->
+    <!-- bower:js -->
+    <script src="index_files/bower_components/jquery/dist/jquery.js"></script>
+    <script src="index_files/bower_components/angular/angular.js"></script>
+    <script src="index_files/bower_components/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="index_files/bower_components/angular-animate/angular-animate.js"></script>
+    <!-- endbower -->
+    <!-- endbuild -->
+
+        <!-- build:js({.tmp,app}) scripts/scripts.js -->
+        <script src="index_files/scripts/app.js"></script>
+        <script src="index_files/scripts/libraries/parallax.min.js"></script>
+        <script src="index_files/scripts/parallax.js"></script>
+        <script src="index_files/scripts/controllers/main.js"></script>
+        <!--<script>
+	   var scene = document.getElementById('scene');
+	   var parallax = new Parallax(scene);
+	</script>    -->
+        <!-- endbuild -->
 </body>
 </html>
