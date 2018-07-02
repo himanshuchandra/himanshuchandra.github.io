@@ -86,3 +86,24 @@ ul{
     height: 200px;
     width: 300px;
 }*/
+
+.social{
+    position: absolute;
+    z-index: 1;
+    left: 90%;
+    max-width: 100%;
+    height: auto;
+    width: auto;
+}
+
+.fb{
+    top: 55%;
+}
+
+.git{
+    top: 70%;
+}
+
+.in{
+    top: 85%;
+}
